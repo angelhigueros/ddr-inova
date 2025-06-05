@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 import { useAppDispatch } from '@/store/hooks';
 import { createPlan, updatePlan } from '@/store/plansSlice';
-import type { LifestylePlan as LifestylePlanType, Goal, Achievement } from '@/types/lifestyle';
+import type { LifestylePlan as LifestylePlanType } from '@/types/lifestyle';
 
 interface Props {
   plan: LifestylePlanType;
@@ -36,7 +36,6 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
   const dispatch = useAppDispatch();
   const [feedback, setFeedback] = useState(plan.feedback || '');
   const [activeTab, setActiveTab] = useState('insights');
-  const [goalProgress, setGoalProgress] = useState<{ [key: string]: boolean }>({});
   const [planName, setPlanName] = useState(plan.name || '');
   const [isEditingName, setIsEditingName] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -104,13 +103,6 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
     setIsEditingName(false);
   };
 
-  const toggleGoalProgress = (goalId: string) => {
-    setGoalProgress(prev => ({
-      ...prev,
-      [goalId]: !prev[goalId]
-    }));
-  };
-
   const tabs = [
     { id: 'insights', label: 'Insights Personalizados', icon: <Star className="w-5 h-5" />, step: 1 },
     { id: 'professional', label: 'Profesional', icon: <BookOpen className="w-5 h-5" />, step: 2 },
@@ -134,6 +126,127 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
       setActiveTab(tabs[currentTabIndex - 1].id);
     }
   };
+
+  // Generate personalized strengths based on user profile
+  const generatePersonalizedStrengths = () => {
+    const strengths = [...plan.personalizedInsights.strengths];
+    const userProfile = plan.userProfile;
+    
+    // Add strengths based on profession
+    if (userProfile.profession.toLowerCase().includes('programador') || userProfile.profession.toLowerCase().includes('desarrollador')) {
+      strengths.push('Pensamiento lógico y resolución sistemática de problemas');
+      strengths.push('Capacidad de aprendizaje continuo y adaptación tecnológica');
+    } else if (userProfile.profession.toLowerCase().includes('profesor') || userProfile.profession.toLowerCase().includes('educador')) {
+      strengths.push('Habilidades comunicativas y capacidad de enseñanza');
+      strengths.push('Paciencia y estructuración del conocimiento');
+    } else if (userProfile.profession.toLowerCase().includes('diseñador')) {
+      strengths.push('Creatividad visual y pensamiento estético');
+      strengths.push('Atención al detalle y sensibilidad artística');
+    } else if (userProfile.profession.toLowerCase().includes('gerente') || userProfile.profession.toLowerCase().includes('manager')) {
+      strengths.push('Liderazgo natural y habilidades organizativas');
+      strengths.push('Capacidad de coordinación y toma de decisiones');
+    }
+    
+    // Add strengths based on work style
+    if (userProfile.preferences.workStyle === 'remoto') {
+      strengths.push('Autodisciplina y capacidad de trabajo independiente');
+      strengths.push('Flexibilidad y adaptabilidad al trabajo digital');
+    } else if (userProfile.preferences.workStyle === 'hibrido') {
+      strengths.push('Versatilidad para diferentes entornos de trabajo');
+      strengths.push('Equilibrio entre colaboración e independencia');
+    }
+    
+    // Add strengths based on exercise preferences
+    if (userProfile.preferences.exerciseType === 'yoga') {
+      strengths.push('Enfoque en el bienestar mental y físico integral');
+      strengths.push('Capacidad de concentración y mindfulness');
+    } else if (userProfile.preferences.exerciseType === 'fuerza') {
+      strengths.push('Determinación y persistencia en objetivos físicos');
+      strengths.push('Disciplina para rutinas estructuradas');
+    } else if (userProfile.preferences.exerciseType === 'deportes') {
+      strengths.push('Espíritu colaborativo y trabajo en equipo');
+      strengths.push('Competitividad saludable y motivación social');
+    }
+    
+    // Add strengths based on hobbies
+    if (userProfile.preferences.hobbies.some(hobby => hobby.toLowerCase().includes('lectura'))) {
+      strengths.push('Curiosidad intelectual y capacidad de concentración');
+      strengths.push('Análisis crítico y expansión continua del conocimiento');
+    }
+    if (userProfile.preferences.hobbies.some(hobby => hobby.toLowerCase().includes('música'))) {
+      strengths.push('Sensibilidad artística y disciplina de práctica');
+      strengths.push('Capacidad de expresión emocional y creatividad');
+    }
+    if (userProfile.preferences.hobbies.some(hobby => hobby.toLowerCase().includes('cocina'))) {
+      strengths.push('Creatividad práctica y atención a los detalles');
+      strengths.push('Paciencia y experimentación controlada');
+    }
+    
+    return strengths.slice(0, 6); // Limit to 6 strengths
+  };
+
+  // Generate personalized tips based on user profile
+  const generatePersonalizedTips = () => {
+    const baseTips = [...plan.personalizedInsights.personalityBasedTips];
+    const userProfile = plan.userProfile;
+    const age = userProfile.age;
+    const timeAvailable = userProfile.timeAvailable;
+    const goals = userProfile.goals;
+    
+    // Tips based on age group
+    if (age === '18-25') {
+      baseTips.push('Aprovecha esta etapa para experimentar y definir tus pasiones. Establece rutinas de aprendizaje que te acompañarán toda la vida.');
+      baseTips.push('Invierte tiempo en networking y construcción de relaciones profesionales. Son fundamentales para tu crecimiento futuro.');
+    } else if (age === '26-35') {
+      baseTips.push('Enfócate en especialización y desarrollo de expertise. Es el momento ideal para consolidar tu carrera profesional.');
+      baseTips.push('Equilibra ambición profesional con bienestar personal. Establece límites claros entre trabajo y vida personal.');
+    } else if (age === '36-45') {
+      baseTips.push('Capitaliza tu experiencia mentoreando a otros. Esto reforzará tu propio conocimiento y expandirá tu red profesional.');
+      baseTips.push('Considera diversificar tus ingresos o explorar nuevas áreas que complementen tu expertise actual.');
+    } else if (age === '46-55') {
+      baseTips.push('Enfócate en liderar y transferir conocimiento. Tu experiencia es invaluable para las nuevas generaciones.');
+      baseTips.push('Mantén activa tu curiosidad y adaptabilidad. El aprendizaje continuo es clave para mantenerse relevante.');
+    } else if (age === '56+') {
+      baseTips.push('Considera roles de consultoría o mentoría que aprovechen tu vasta experiencia y conocimiento acumulado.');
+      baseTips.push('Enfócate en proyectos que te apasionen y aporten significado personal, más allá del beneficio económico.');
+    }
+    
+    // Tips based on available time
+    if (timeAvailable === '1-3 horas') {
+      baseTips.push('Maximiza tu tiempo con técnicas de microaprendizaje. 15-20 minutos diarios pueden generar grandes resultados a largo plazo.');
+      baseTips.push('Prioriza actividades de alto impacto. Enfócate en las tareas que generen el 80% de tus resultados.');
+    } else if (timeAvailable === '15+ horas') {
+      baseTips.push('Con más tiempo disponible, puedes permitirte explorar proyectos más ambiciosos y de largo plazo.');
+      baseTips.push('Considera dividir tu tiempo en bloques temáticos para mantener el enfoque y evitar la dispersión.');
+    }
+    
+    // Tips based on goals
+    if (goals.some(goal => goal.toLowerCase().includes('carrera') || goal.toLowerCase().includes('profesional'))) {
+      baseTips.push('Desarrolla un plan de carrera a 5 años con hitos específicos. Revísalo y ajústalo cada 6 meses.');
+      baseTips.push('Identifica las habilidades más demandadas en tu industria y créate un plan de desarrollo específico.');
+    }
+    
+    if (goals.some(goal => goal.toLowerCase().includes('salud') || goal.toLowerCase().includes('fitness'))) {
+      baseTips.push('Integra el ejercicio en tu rutina diaria como si fuera una cita médica importante. La consistencia es más valiosa que la intensidad.');
+      baseTips.push('Combina ejercicio con aprendizaje: escucha podcasts o audiolibros mientras caminas o haces cardio.');
+    }
+    
+    if (goals.some(goal => goal.toLowerCase().includes('habilidad') || goal.toLowerCase().includes('aprender'))) {
+      baseTips.push('Aplica la regla del 1% diario: mejora un poco cada día. En un año habrás mejorado 37 veces.');
+      baseTips.push('Enseña lo que aprendes. Explicar conceptos a otros consolidará tu propio aprendizaje.');
+    }
+    
+    // Tips based on profession
+    if (userProfile.profession.toLowerCase().includes('programador') || userProfile.profession.toLowerCase().includes('desarrollador')) {
+      baseTips.push('Mantente actualizado con las últimas tecnologías, pero enfócate en dominar los fundamentos que trascienden frameworks específicos.');
+      baseTips.push('Contribuye a proyectos open source. Es una excelente forma de aprender, hacer networking y construir tu portafolio.');
+    }
+    
+    return baseTips.slice(0, 8); // Limit to 8 tips
+  };
+
+  const personalizedStrengths = generatePersonalizedStrengths();
+  const personalizedTips = generatePersonalizedTips();
 
   return (
     <div className="bg-white shadow-lg sm:rounded-xl overflow-hidden">
@@ -278,77 +391,359 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
 
             <div className="grid md:grid-cols-2 gap-6">
               {/* Strengths */}
-              <div className="bg-green-50 rounded-lg p-6">
+              <div className="bg-green-50 rounded-lg p-6 border border-green-200">
                 <h4 className="text-xl font-semibold text-green-800 mb-4 flex items-center gap-2">
                   <TrendingUp className="w-5 h-5" />
                   Tus Fortalezas
                 </h4>
-                <ul className="space-y-2">
-                  {plan.personalizedInsights.strengths.map((strength, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-600 mt-1 flex-shrink-0" />
-                      <span className="text-green-700">{strength}</span>
-                    </li>
+                <div className="space-y-3">
+                  {personalizedStrengths.map((strength, index) => (
+                    <div key={index} className="bg-white rounded-lg p-4 border border-green-200">
+                      <div className="flex items-start gap-3">
+                        <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                        <div className="flex-1">
+                          <p className="text-green-700 font-medium">{strength}</p>
+                          <div className="mt-2 flex items-center gap-2">
+                            <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                              Potencia esta fortaleza
+                            </span>
+                            {index < 3 && (
+                              <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">
+                                Fortaleza clave
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   ))}
-                </ul>
+                </div>
+                <div className="mt-4 p-3 bg-green-100 rounded-lg">
+                  <p className="text-sm text-green-800">
+                    <strong>💡 Basado en tu perfil:</strong> Como {plan.userProfile.profession.toLowerCase()}, con {plan.userProfile.timeAvailable} disponibles semanalmente, estas fortalezas te darán ventaja competitiva en tus objetivos.
+                  </p>
+                </div>
+                
+                {/* Strength utilization suggestions */}
+                <div className="mt-4 space-y-2">
+                  <h5 className="text-sm font-semibold text-green-800">🚀 Cómo aprovechar tus fortalezas:</h5>
+                  <div className="grid gap-2">
+                    <div className="bg-white rounded p-3 border border-green-200">
+                      <p className="text-xs text-green-700">
+                        <strong>En tu trabajo:</strong> Destaca estas fortalezas en tu CV y LinkedIn. Úsalas como base para liderar proyectos.
+                      </p>
+                    </div>
+                    <div className="bg-white rounded p-3 border border-green-200">
+                      <p className="text-xs text-green-700">
+                        <strong>Para nuevas habilidades:</strong> Conecta el aprendizaje nuevo con estas fortalezas existentes.
+                      </p>
+                    </div>
+                    <div className="bg-white rounded p-3 border border-green-200">
+                      <p className="text-xs text-green-700">
+                        <strong>En networking:</strong> Ofrece ayuda en áreas donde eres fuerte, creando relaciones valiosas.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Improvement Areas */}
-              <div className="bg-blue-50 rounded-lg p-6">
+              <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
                 <h4 className="text-xl font-semibold text-blue-800 mb-4 flex items-center gap-2">
                   <Target className="w-5 h-5" />
                   Áreas de Mejora
                 </h4>
-                <ul className="space-y-2">
+                <div className="space-y-3">
                   {plan.personalizedInsights.improvementAreas.map((area, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <ChevronRight className="w-4 h-4 text-blue-600 mt-1 flex-shrink-0" />
-                      <span className="text-blue-700">{area}</span>
-                    </li>
+                    <div key={index} className="bg-white rounded-lg p-4 border border-blue-200">
+                      <div className="flex items-start gap-3">
+                        <ChevronRight className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <div className="flex-1">
+                          <p className="text-blue-700 font-medium">{area}</p>
+                          <div className="mt-2 space-y-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                                Prioridad: {index === 0 ? 'Alta' : index === 1 ? 'Media' : 'Baja'}
+                              </span>
+                            </div>
+                            <div className="w-full bg-blue-200 rounded-full h-2">
+                              <div 
+                                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                style={{ width: `${Math.max(10, 30 - (index * 10))}%` }}
+                              ></div>
+                            </div>
+                            <p className="text-xs text-blue-600">
+                              Progreso inicial: Definir plan de acción
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   ))}
-                </ul>
+                </div>
+                <div className="mt-4 p-3 bg-blue-100 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <strong>🎯 Plan de acción:</strong> Enfócate en un área a la vez. Pequeños pasos consistentes generan grandes cambios.
+                  </p>
+                </div>
               </div>
             </div>
 
             {/* Personalized Tips */}
-            <div className="bg-purple-50 rounded-lg p-6">
-              <h4 className="text-xl font-semibold text-purple-800 mb-4">Consejos Personalizados</h4>
+            <div className="bg-purple-50 rounded-lg p-6 border border-purple-200">
+              <h4 className="text-xl font-semibold text-purple-800 mb-6 flex items-center gap-2">
+                <Star className="w-5 h-5" />
+                Consejos Personalizados
+              </h4>
+              
+              {/* User profile context */}
+              <div className="mb-4 p-3 bg-white rounded-lg border border-purple-200">
+                <p className="text-sm text-purple-700">
+                  <strong>Personalizado para:</strong> {plan.userProfile.name}, {plan.userProfile.age}, {plan.userProfile.profession} | 
+                  <strong> Tiempo disponible:</strong> {plan.userProfile.timeAvailable} | 
+                  <strong> Estilo:</strong> {plan.userProfile.preferences.workStyle}
+                </p>
+              </div>
+              
               <div className="grid gap-4">
-                {plan.personalizedInsights.personalityBasedTips.map((tip, index) => (
-                  <div key={index} className="bg-white rounded-lg p-4 border border-purple-200">
-                    <p className="text-purple-700">{tip}</p>
+                {personalizedTips.map((tip, index) => (
+                  <div key={index} className="bg-white rounded-lg p-4 border border-purple-200 relative">
+                    <div className="flex items-start gap-4">
+                      <div className="bg-purple-100 rounded-full p-2 flex-shrink-0">
+                        <span className="text-purple-600 font-bold text-sm">{index + 1}</span>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-purple-700 mb-3">{tip}</p>
+                        
+                        {/* Context tags */}
+                        <div className="flex flex-wrap gap-1 mb-3">
+                          {index < 2 && (
+                            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                              Grupo etario: {plan.userProfile.age}
+                            </span>
+                          )}
+                          {index >= 2 && index < 4 && (
+                            <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">
+                              Tiempo: {plan.userProfile.timeAvailable}
+                            </span>
+                          )}
+                          {index >= 4 && index < 6 && (
+                            <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                              Objetivos específicos
+                            </span>
+                          )}
+                          {index >= 6 && (
+                            <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full">
+                              Profesión: {plan.userProfile.profession}
+                            </span>
+                          )}
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <div className="flex gap-2">
+                            <button className="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full hover:bg-purple-200 transition-colors">
+                              ✓ Aplicado
+                            </button>
+                            <button className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full hover:bg-gray-200 transition-colors">
+                              Recordar después
+                            </button>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-purple-600">
+                              Dificultad: {index === 0 ? '⭐' : index === 1 ? '⭐⭐' : index < 4 ? '⭐⭐' : '⭐⭐⭐'}
+                            </span>
+                            <span className="text-xs text-green-600">
+                              Impacto: {index < 3 ? 'Alto' : index < 6 ? 'Medio' : 'Alto'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
+              
+              <div className="mt-4 p-3 bg-purple-100 rounded-lg">
+                <p className="text-sm text-purple-800">
+                  <strong>⚡ Seguimiento personalizado:</strong> Estos consejos están específicamente diseñados para tu perfil. Implementa uno cada semana para resultados óptimos.
+                </p>
+              </div>
+              
+              {/* Implementation timeline */}
+              <div className="mt-4 bg-white rounded-lg p-4 border border-purple-200">
+                <h5 className="text-sm font-semibold text-purple-800 mb-3">📅 Plan de implementación sugerido:</h5>
+                <div className="grid md:grid-cols-2 gap-3">
+                  <div>
+                    <h6 className="text-xs font-medium text-purple-700 mb-2">Semana 1-2 (Fundación):</h6>
+                    <ul className="text-xs text-purple-600 space-y-1">
+                      <li>• Implementar consejos 1-2 (más fáciles)</li>
+                      <li>• Establecer rutinas básicas</li>
+                      <li>• Crear sistema de seguimiento</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h6 className="text-xs font-medium text-purple-700 mb-2">Semana 3-4 (Expansión):</h6>
+                    <ul className="text-xs text-purple-600 space-y-1">
+                      <li>• Agregar consejos 3-4</li>
+                      <li>• Refinar técnicas existentes</li>
+                      <li>• Evaluar progreso inicial</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Learning Style & Motivation */}
+            {/* Learning Style & Motivation - Enhanced */}
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-yellow-50 rounded-lg p-6">
-                <h4 className="text-lg font-semibold text-yellow-800 mb-3">Tu Estilo de Aprendizaje</h4>
-                <p className="text-yellow-700">{plan.personalizedInsights.preferredLearningStyle}</p>
+              <div className="bg-yellow-50 rounded-lg p-6 border border-yellow-200">
+                <h4 className="text-lg font-semibold text-yellow-800 mb-4 flex items-center gap-2">
+                  <BookOpen className="w-5 h-5" />
+                  Tu Estilo de Aprendizaje
+                </h4>
+                <div className="bg-white rounded-lg p-4 border border-yellow-200 mb-4">
+                  <p className="text-yellow-700 font-medium mb-3">{plan.personalizedInsights.preferredLearningStyle}</p>
+                  
+                  <div className="space-y-3">
+                    <div>
+                      <h5 className="text-sm font-semibold text-yellow-800 mb-2">📚 Recursos recomendados:</h5>
+                      <ul className="text-xs text-yellow-700 space-y-1">
+                        <li>• Videos tutoriales interactivos</li>
+                        <li>• Aplicaciones móviles educativas</li>
+                        <li>• Cursos online con gamificación</li>
+                        <li>• Simuladores y herramientas prácticas</li>
+                      </ul>
+                    </div>
+                    
+                    <div>
+                      <h5 className="text-sm font-semibold text-yellow-800 mb-2">⏱️ Sesiones ideales:</h5>
+                      <div className="flex gap-2">
+                        <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">25-30 min</span>
+                        <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">Interactivo</span>
+                        <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">Visual</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-yellow-100 rounded-lg p-3">
+                  <p className="text-xs text-yellow-800">
+                    <strong>💡 Optimiza tu aprendizaje:</strong> Usa múltiples dispositivos y combina teoría con práctica inmediata.
+                  </p>
+                </div>
               </div>
-              <div className="bg-pink-50 rounded-lg p-6">
-                <h4 className="text-lg font-semibold text-pink-800 mb-3">Tu Estilo de Motivación</h4>
-                <p className="text-pink-700">{plan.personalizedInsights.motivationStyle}</p>
+
+              <div className="bg-pink-50 rounded-lg p-6 border border-pink-200">
+                <h4 className="text-lg font-semibold text-pink-800 mb-4 flex items-center gap-2">
+                  <Award className="w-5 h-5" />
+                  Tu Estilo de Motivación
+                </h4>
+                <div className="bg-white rounded-lg p-4 border border-pink-200 mb-4">
+                  <p className="text-pink-700 font-medium mb-3">{plan.personalizedInsights.motivationStyle}</p>
+                  
+                  <div className="space-y-3">
+                    <div>
+                      <h5 className="text-sm font-semibold text-pink-800 mb-2">🚀 Estrategias motivacionales:</h5>
+                      <ul className="text-xs text-pink-700 space-y-1">
+                        <li>• Prueba diferentes enfoques cada semana</li>
+                        <li>• Documenta qué métodos funcionan mejor</li>
+                        <li>• Experimenta con nuevas herramientas</li>
+                        <li>• Mantén variedad en tus rutinas</li>
+                      </ul>
+                    </div>
+                    
+                    <div>
+                      <h5 className="text-sm font-semibold text-pink-800 mb-2">📊 Seguimiento motivacional:</h5>
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-pink-700">Nivel de energía</span>
+                          <div className="flex gap-1">
+                            {[1,2,3,4,5].map(i => (
+                              <div key={i} className={`w-3 h-3 rounded-full ${i <= 4 ? 'bg-pink-400' : 'bg-pink-200'}`}></div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-pink-700">Curiosidad</span>
+                          <div className="flex gap-1">
+                            {[1,2,3,4,5].map(i => (
+                              <div key={i} className={`w-3 h-3 rounded-full ${i <= 5 ? 'bg-pink-400' : 'bg-pink-200'}`}></div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-pink-100 rounded-lg p-3">
+                  <p className="text-xs text-pink-800">
+                    <strong>🎯 Mantén la motivación:</strong> Celebra los pequeños experimentos exitosos y ajusta según los resultados.
+                  </p>
+                </div>
               </div>
             </div>
 
-            {/* Time Optimization */}
-            <div className="bg-gray-50 rounded-lg p-6">
-              <h4 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            {/* Time Optimization - Enhanced */}
+            <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+              <h4 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
                 <Clock className="w-5 h-5" />
                 Optimización del Tiempo
               </h4>
-              <div className="grid gap-3">
+              <div className="grid gap-4">
                 {plan.personalizedInsights.timeOptimization.map((tip, index) => (
-                  <div key={index} className="flex items-start gap-3 p-3 bg-white rounded border">
-                    <div className="bg-purple-100 rounded-full p-1">
-                      <span className="text-purple-600 text-sm font-semibold">{index + 1}</span>
+                  <div key={index} className="bg-white rounded-lg p-4 border border-gray-200">
+                    <div className="flex items-start gap-4">
+                      <div className="bg-purple-100 rounded-full p-3 flex-shrink-0">
+                        <span className="text-purple-600 text-sm font-semibold">{index + 1}</span>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-gray-700 mb-3">{tip}</p>
+                        <div className="flex items-center justify-between">
+                          <div className="flex gap-2">
+                            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                              Tiempo estimado: {index === 0 ? '5-10 min' : index === 1 ? '15-30 min' : '30-60 min'}
+                            </span>
+                            <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded">
+                              Impacto: {index === 0 ? 'Alto' : index === 1 ? 'Medio' : 'Alto'}
+                            </span>
+                          </div>
+                          <div className="flex gap-1">
+                            <button className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full hover:bg-green-200 transition-colors">
+                              ✓ Implementado
+                            </button>
+                          </div>
+                        </div>
+                        <div className="mt-3 w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-gradient-to-r from-purple-400 to-blue-500 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${10 + (index * 15)}%` }}
+                          ></div>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Progreso de implementación
+                        </p>
+                      </div>
                     </div>
-                    <span className="text-gray-700">{tip}</span>
                   </div>
                 ))}
+              </div>
+              
+              <div className="mt-6 grid md:grid-cols-3 gap-4">
+                <div className="bg-blue-100 rounded-lg p-4 text-center">
+                  <h5 className="text-sm font-semibold text-blue-800 mb-2">⏰ Tiempo Disponible</h5>
+                  <p className="text-lg font-bold text-blue-900">{plan.userProfile.timeAvailable}</p>
+                  <p className="text-xs text-blue-700">por semana</p>
+                </div>
+                <div className="bg-green-100 rounded-lg p-4 text-center">
+                  <h5 className="text-sm font-semibold text-green-800 mb-2">🎯 Técnicas Aplicadas</h5>
+                  <p className="text-lg font-bold text-green-900">0/{plan.personalizedInsights.timeOptimization.length}</p>
+                  <p className="text-xs text-green-700">estrategias activas</p>
+                </div>
+                <div className="bg-purple-100 rounded-lg p-4 text-center">
+                  <h5 className="text-sm font-semibold text-purple-800 mb-2">📈 Eficiencia</h5>
+                  <p className="text-lg font-bold text-purple-900">0%</p>
+                  <p className="text-xs text-purple-700">mejora estimada</p>
+                </div>
               </div>
             </div>
           </div>

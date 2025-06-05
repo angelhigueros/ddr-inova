@@ -27,7 +27,14 @@ export interface UserProfile {
     exerciseType: string;
     hobbies: string[];
     dietType: string;
+    learningStyle: string;
+    preferredSchedule: string;
+    budget: string;
   };
+  currentSkills: string[];
+  motivationFactors: string[];
+  currentChallenges: string[];
+  experience: string;
 }
 
 export interface ProfessionalPlan {

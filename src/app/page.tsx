@@ -15,24 +15,38 @@ const validationSchema = Yup.object({
   name: Yup.string().required('El nombre es requerido'),
   age: Yup.string().required('La edad es requerida'),
   profession: Yup.string().required('La profesión es requerida'),
-  goals: Yup.string().required('Al menos un objetivo es requerido'),
+  goals: Yup.array().min(1, 'Selecciona al menos un objetivo').required('Al menos un objetivo es requerido'),
   timeAvailable: Yup.string().required('El tiempo disponible es requerido'),
   workStyle: Yup.string().required('El estilo de trabajo es requerido'),
   exerciseType: Yup.string().required('El tipo de ejercicio es requerido'),
-  hobbies: Yup.string().required('Al menos un hobby es requerido'),
-  dietType: Yup.string().required('El tipo de dieta es requerido')
+  hobbies: Yup.array().min(1, 'Selecciona al menos un hobby').required('Al menos un hobby es requerido'),
+  dietType: Yup.string().required('El tipo de dieta es requerido'),
+  currentSkills: Yup.array(),
+  learningStyle: Yup.string().required('El estilo de aprendizaje es requerido'),
+  motivationFactors: Yup.array().min(1, 'Selecciona al menos un factor de motivación'),
+  currentChallenges: Yup.array(),
+  preferredSchedule: Yup.string().required('El horario preferido es requerido'),
+  budget: Yup.string().required('El presupuesto es requerido'),
+  experience: Yup.string().required('El nivel de experiencia es requerido')
 });
 
 interface FormValues {
   name: string;
   age: string;
   profession: string;
-  goals: string;
+  goals: string[];
   timeAvailable: string;
   workStyle: string;
   exerciseType: string;
-  hobbies: string;
+  hobbies: string[];
   dietType: string;
+  currentSkills: string[];
+  learningStyle: string;
+  motivationFactors: string[];
+  currentChallenges: string[];
+  preferredSchedule: string;
+  budget: string;
+  experience: string;
 }
 
 type ViewMode = 'manage' | 'create' | 'view' | 'edit';
@@ -47,14 +61,21 @@ export default function Home() {
       name: values.name,
       age: values.age,
       profession: values.profession,
-      goals: values.goals.split(',').map(g => g.trim()),
+      goals: values.goals,
       timeAvailable: values.timeAvailable,
       preferences: {
         workStyle: values.workStyle,
         exerciseType: values.exerciseType,
-        hobbies: values.hobbies.split(',').map(h => h.trim()),
-        dietType: values.dietType
-      }
+        hobbies: values.hobbies,
+        dietType: values.dietType,
+        learningStyle: values.learningStyle,
+        preferredSchedule: values.preferredSchedule,
+        budget: values.budget
+      },
+      currentSkills: values.currentSkills,
+      motivationFactors: values.motivationFactors,
+      currentChallenges: values.currentChallenges,
+      experience: values.experience
     };
 
     const plan = generatePersonalizedPlan(userProfile);

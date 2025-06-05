@@ -19,10 +19,14 @@ import {
   ArrowRight,
   Check,
   Save,
-  Edit3
+  Edit3,
+  Wand2,
+  AlertCircle,
+  RefreshCw
 } from 'lucide-react';
 import { useAppDispatch } from '@/store/hooks';
 import { createPlan, updatePlan } from '@/store/plansSlice';
+import { analyzeFeedback, applyAdjustmentsToPlan, type FeedbackAnalysis } from '@/utils/feedbackAnalyzer';
 import type { LifestylePlan as LifestylePlanType } from '@/types/lifestyle';
 
 interface Props {
@@ -39,10 +43,71 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
   const [planName, setPlanName] = useState(plan.name || '');
   const [isEditingName, setIsEditingName] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [adjustedPlan, setAdjustedPlan] = useState<LifestylePlanType | null>(null);
+  const [feedbackAnalysis, setFeedbackAnalysis] = useState<FeedbackAnalysis | null>(null);
+  const [showAdjustments, setShowAdjustments] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  // Use adjusted plan if available, otherwise use original plan
+  const currentPlan = adjustedPlan || plan;
+
+  const handleAnalyzeFeedback = async () => {
+    if (!feedback.trim()) return;
+    
+    setIsAnalyzing(true);
+    
+    try {
+      // Simulate analysis time for better UX
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      const analysis = analyzeFeedback(feedback, plan);
+      setFeedbackAnalysis(analysis);
+      
+      if (analysis.adjustments.length > 0) {
+        const newPlan = applyAdjustmentsToPlan(plan, analysis.adjustments);
+        setAdjustedPlan(newPlan);
+        setShowAdjustments(true);
+      }
+    } catch (error) {
+      console.error('Error analyzing feedback:', error);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const handleAcceptAdjustments = () => {
+    if (adjustedPlan) {
+      // Save the adjusted plan
+      if (isEditing && plan.id) {
+        dispatch(updatePlan({
+          id: plan.id,
+          updates: { 
+            ...adjustedPlan,
+            feedback,
+            updatedAt: new Date().toISOString()
+          }
+        }));
+      } else {
+        dispatch(createPlan({
+          plan: { ...adjustedPlan, feedback },
+          name: planName
+        }));
+      }
+      
+      setShowAdjustments(false);
+      if (onSave) onSave();
+    }
+  };
+
+  const handleRejectAdjustments = () => {
+    setAdjustedPlan(null);
+    setFeedbackAnalysis(null);
+    setShowAdjustments(false);
+  };
 
   const handleSubmitFeedback = () => {
     if (isEditing && plan.id) {
-      // Update existing plan with feedback
+      // Update existing plan with feedback only
       dispatch(updatePlan({
         id: plan.id,
         updates: { feedback }
@@ -129,120 +194,215 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
 
   // Generate personalized strengths based on user profile
   const generatePersonalizedStrengths = () => {
-    const strengths = [...plan.personalizedInsights.strengths];
-    const userProfile = plan.userProfile;
+    const strengths = [...currentPlan.personalizedInsights.strengths];
+    const userProfile = currentPlan.userProfile;
+    
+    // Add strengths based on specific goals
+    userProfile.goals.forEach(goal => {
+      switch(goal) {
+        case 'Avanzar en mi carrera profesional':
+          strengths.push('Ambición profesional y visión de crecimiento a largo plazo');
+          break;
+        case 'Mejorar mi condición física':
+          strengths.push('Compromiso con el bienestar personal y salud integral');
+          break;
+        case 'Desarrollar nuevas habilidades técnicas':
+          strengths.push('Mentalidad de crecimiento y adaptabilidad tecnológica');
+          break;
+        case 'Aprender un nuevo idioma':
+          strengths.push('Apertura cultural y capacidad de comunicación global');
+          break;
+        case 'Desarrollar habilidades de liderazgo':
+          strengths.push('Visión de liderazgo y capacidad de influencia positiva');
+          break;
+        case 'Crear un negocio propio':
+          strengths.push('Espíritu emprendedor y tolerancia al riesgo calculado');
+          break;
+        case 'Aprender habilidades creativas':
+          strengths.push('Creatividad innata y expresión artística');
+          break;
+      }
+    });
+
+    // Add strengths based on current skills
+    userProfile.currentSkills.forEach(skill => {
+      switch(skill) {
+        case 'Liderazgo':
+          strengths.push('Capacidades naturales de liderazgo ya desarrolladas');
+          break;
+        case 'Comunicación efectiva':
+          strengths.push('Habilidades comunicativas sólidas para el crecimiento profesional');
+          break;
+        case 'Programación':
+          strengths.push('Base técnica sólida en desarrollo y lógica computacional');
+          break;
+        case 'Creatividad e innovación':
+          strengths.push('Pensamiento innovador y capacidad de generar soluciones únicas');
+          break;
+        case 'Análisis de datos':
+          strengths.push('Capacidad analítica y toma de decisiones basada en datos');
+          break;
+      }
+    });
+
+    // Add strengths based on hobbies
+    userProfile.preferences.hobbies.forEach(hobby => {
+      switch(hobby) {
+        case 'Lectura y escritura':
+          strengths.push('Curiosidad intelectual y capacidad de análisis profundo');
+          break;
+        case 'Música (tocar instrumentos)':
+          strengths.push('Disciplina de práctica y sensibilidad artística desarrollada');
+          break;
+        case 'Programación por hobby':
+          strengths.push('Pasión genuina por la tecnología más allá del trabajo');
+          break;
+        case 'Yoga y meditación':
+          strengths.push('Consciencia corporal y capacidad de autorregulación emocional');
+          break;
+        case 'Cocina y gastronomía':
+          strengths.push('Creatividad práctica y atención meticulosa a los detalles');
+          break;
+      }
+    });
     
     // Add strengths based on profession
     if (userProfile.profession.toLowerCase().includes('programador') || userProfile.profession.toLowerCase().includes('desarrollador')) {
-      strengths.push('Pensamiento lógico y resolución sistemática de problemas');
-      strengths.push('Capacidad de aprendizaje continuo y adaptación tecnológica');
+      strengths.push('Pensamiento lógico y resolución sistemática de problemas complejos');
+      strengths.push('Adaptabilidad a nuevas tecnologías y frameworks emergentes');
     } else if (userProfile.profession.toLowerCase().includes('profesor') || userProfile.profession.toLowerCase().includes('educador')) {
-      strengths.push('Habilidades comunicativas y capacidad de enseñanza');
-      strengths.push('Paciencia y estructuración del conocimiento');
+      strengths.push('Habilidades pedagógicas y capacidad de transferir conocimiento');
+      strengths.push('Paciencia y estructuración metodológica del aprendizaje');
     } else if (userProfile.profession.toLowerCase().includes('diseñador')) {
-      strengths.push('Creatividad visual y pensamiento estético');
-      strengths.push('Atención al detalle y sensibilidad artística');
+      strengths.push('Sensibilidad estética y pensamiento visual desarrollado');
+      strengths.push('Capacidad de conceptualización y materialización de ideas');
     } else if (userProfile.profession.toLowerCase().includes('gerente') || userProfile.profession.toLowerCase().includes('manager')) {
-      strengths.push('Liderazgo natural y habilidades organizativas');
-      strengths.push('Capacidad de coordinación y toma de decisiones');
+      strengths.push('Habilidades organizativas y coordinación de equipos multidisciplinarios');
+      strengths.push('Visión estratégica y capacidad de toma de decisiones complejas');
     }
     
-    // Add strengths based on work style
-    if (userProfile.preferences.workStyle === 'remoto') {
-      strengths.push('Autodisciplina y capacidad de trabajo independiente');
-      strengths.push('Flexibilidad y adaptabilidad al trabajo digital');
-    } else if (userProfile.preferences.workStyle === 'hibrido') {
-      strengths.push('Versatilidad para diferentes entornos de trabajo');
-      strengths.push('Equilibrio entre colaboración e independencia');
-    }
+    // Add strengths based on motivation factors
+    userProfile.motivationFactors.forEach(factor => {
+      switch(factor) {
+        case 'Aprendizaje continuo':
+          strengths.push('Sed insaciable de conocimiento y mejora constante');
+          break;
+        case 'Autonomía e independencia':
+          strengths.push('Autodisciplina y capacidad de automotivación excepcional');
+          break;
+        case 'Impacto social positivo':
+          strengths.push('Consciencia social y orientación hacia el servicio a otros');
+          break;
+        case 'Desafíos intelectuales':
+          strengths.push('Atracción natural hacia problemas complejos y estimulantes');
+          break;
+      }
+    });
     
-    // Add strengths based on exercise preferences
-    if (userProfile.preferences.exerciseType === 'yoga') {
-      strengths.push('Enfoque en el bienestar mental y físico integral');
-      strengths.push('Capacidad de concentración y mindfulness');
-    } else if (userProfile.preferences.exerciseType === 'fuerza') {
-      strengths.push('Determinación y persistencia en objetivos físicos');
-      strengths.push('Disciplina para rutinas estructuradas');
-    } else if (userProfile.preferences.exerciseType === 'deportes') {
-      strengths.push('Espíritu colaborativo y trabajo en equipo');
-      strengths.push('Competitividad saludable y motivación social');
-    }
-    
-    // Add strengths based on hobbies
-    if (userProfile.preferences.hobbies.some(hobby => hobby.toLowerCase().includes('lectura'))) {
-      strengths.push('Curiosidad intelectual y capacidad de concentración');
-      strengths.push('Análisis crítico y expansión continua del conocimiento');
-    }
-    if (userProfile.preferences.hobbies.some(hobby => hobby.toLowerCase().includes('música'))) {
-      strengths.push('Sensibilidad artística y disciplina de práctica');
-      strengths.push('Capacidad de expresión emocional y creatividad');
-    }
-    if (userProfile.preferences.hobbies.some(hobby => hobby.toLowerCase().includes('cocina'))) {
-      strengths.push('Creatividad práctica y atención a los detalles');
-      strengths.push('Paciencia y experimentación controlada');
-    }
-    
-    return strengths.slice(0, 6); // Limit to 6 strengths
+    // Remove duplicates and limit
+    return [...new Set(strengths)].slice(0, 8);
   };
 
   // Generate personalized tips based on user profile
   const generatePersonalizedTips = () => {
-    const baseTips = [...plan.personalizedInsights.personalityBasedTips];
-    const userProfile = plan.userProfile;
+    const baseTips = [...currentPlan.personalizedInsights.personalityBasedTips];
+    const userProfile = currentPlan.userProfile;
     const age = userProfile.age;
     const timeAvailable = userProfile.timeAvailable;
-    const goals = userProfile.goals;
     
-    // Tips based on age group
-    if (age === '18-25') {
-      baseTips.push('Aprovecha esta etapa para experimentar y definir tus pasiones. Establece rutinas de aprendizaje que te acompañarán toda la vida.');
-      baseTips.push('Invierte tiempo en networking y construcción de relaciones profesionales. Son fundamentales para tu crecimiento futuro.');
-    } else if (age === '26-35') {
-      baseTips.push('Enfócate en especialización y desarrollo de expertise. Es el momento ideal para consolidar tu carrera profesional.');
-      baseTips.push('Equilibra ambición profesional con bienestar personal. Establece límites claros entre trabajo y vida personal.');
-    } else if (age === '36-45') {
-      baseTips.push('Capitaliza tu experiencia mentoreando a otros. Esto reforzará tu propio conocimiento y expandirá tu red profesional.');
-      baseTips.push('Considera diversificar tus ingresos o explorar nuevas áreas que complementen tu expertise actual.');
-    } else if (age === '46-55') {
-      baseTips.push('Enfócate en liderar y transferir conocimiento. Tu experiencia es invaluable para las nuevas generaciones.');
-      baseTips.push('Mantén activa tu curiosidad y adaptabilidad. El aprendizaje continuo es clave para mantenerse relevante.');
-    } else if (age === '56+') {
-      baseTips.push('Considera roles de consultoría o mentoría que aprovechen tu vasta experiencia y conocimiento acumulado.');
-      baseTips.push('Enfócate en proyectos que te apasionen y aporten significado personal, más allá del beneficio económico.');
+    // Tips based on specific goals
+    userProfile.goals.forEach(goal => {
+      switch(goal) {
+        case 'Avanzar en mi carrera profesional':
+          baseTips.push(`Como ${userProfile.profession.toLowerCase()}, enfócate en desarrollar las habilidades más demandadas en tu industria. Crea un plan de carrera a 5 años con hitos específicos cada 6 meses.`);
+          break;
+        case 'Mejorar mi condición física':
+          baseTips.push(`Con tu preferencia por ${userProfile.preferences.exerciseType}, diseña una rutina progresiva que se adapte a tu horario ${userProfile.preferences.preferredSchedule}. La consistencia vence a la intensidad.`);
+          break;
+        case 'Desarrollar nuevas habilidades técnicas':
+          baseTips.push(`Aprovecha tu estilo de aprendizaje ${userProfile.preferences.learningStyle} para dominar una nueva habilidad cada trimestre. Practica el 80/20: 80% fundamentos, 20% experimentación.`);
+          break;
+        case 'Aprender un nuevo idioma':
+          baseTips.push(`Con ${userProfile.timeAvailable} disponibles, dedica al menos 15-20 minutos diarios a práctica conversacional. La inmersión partial es más efectiva que sesiones largas esporádicas.`);
+          break;
+        case 'Desarrollar habilidades de liderazgo':
+          baseTips.push('Busca oportunidades de liderar proyectos pequeños en tu trabajo actual. El liderazgo se desarrolla practicando, no solo estudiando teoría.');
+          break;
+      }
+    });
+
+    // Tips based on current challenges
+    userProfile.currentChallenges.forEach(challenge => {
+      switch(challenge) {
+        case 'Falta de tiempo':
+          baseTips.push(`Para superar la falta de tiempo, implementa time-blocking en tu agenda ${userProfile.preferences.preferredSchedule}. Programa tus prioridades como si fueran citas médicas importantes.`);
+          break;
+        case 'Procrastinación':
+          baseTips.push('Usa la regla de los 2 minutos: si algo toma menos de 2 minutos, hazlo inmediatamente. Para tareas más largas, comprométete solo con 5 minutos iniciales.');
+          break;
+        case 'Falta de motivación':
+          baseTips.push(`Conecta cada actividad con tus motivadores principales: ${userProfile.motivationFactors.slice(0, 2).join(' y ')}. Visualiza el "por qué" antes del "cómo".`);
+          break;
+        case 'Estrés y ansiedad':
+          baseTips.push(`Aprovecha tu interés en ${userProfile.preferences.hobbies.find(h => h.includes('yoga') || h.includes('meditación')) || 'actividades relajantes'} para crear un ritual diario de 10 minutos de descompresión.`);
+          break;
+        case 'Perfeccionismo':
+          baseTips.push('Adopta el mindset "hecho es mejor que perfecto". Establece deadlines artificiales y cúmplelos, incluso si el resultado no es perfecto.');
+          break;
+      }
+    });
+
+    // Tips based on learning style and schedule
+    switch(userProfile.preferences.learningStyle) {
+      case 'visual':
+        baseTips.push(`Como aprendiz visual, crea mapas mentales y diagramas de tus objetivos. Usa colores y símbolos para hacer la información más memorable y accesible.`);
+        break;
+      case 'auditivo':
+        baseTips.push(`Aprovecha tu tiempo de ${userProfile.preferences.preferredSchedule} para escuchar podcasts educativos. Graba notas de voz para repasar conceptos importantes.`);
+        break;
+      case 'kinestesico':
+        baseTips.push('Tu estilo kinestésico necesita acción. Practica inmediatamente lo que aprendes y busca proyectos hands-on para consolidar conocimientos.');
+        break;
+      case 'lectura':
+        baseTips.push(`Combina tu amor por la lectura con tus hobbies: ${userProfile.preferences.hobbies.slice(0, 2).join(' y ')}. Crea resúmenes escritos de lo que aprendes.`);
+        break;
     }
-    
-    // Tips based on available time
-    if (timeAvailable === '1-3 horas') {
-      baseTips.push('Maximiza tu tiempo con técnicas de microaprendizaje. 15-20 minutos diarios pueden generar grandes resultados a largo plazo.');
-      baseTips.push('Prioriza actividades de alto impacto. Enfócate en las tareas que generen el 80% de tus resultados.');
-    } else if (timeAvailable === '15+ horas') {
-      baseTips.push('Con más tiempo disponible, puedes permitirte explorar proyectos más ambiciosos y de largo plazo.');
-      baseTips.push('Considera dividir tu tiempo en bloques temáticos para mantener el enfoque y evitar la dispersión.');
+
+    // Tips based on budget and goals
+    const budget = userProfile.preferences.budget;
+    if (budget === '0-50') {
+      baseTips.push('Con presupuesto limitado, enfócate en recursos gratuitos de alta calidad: YouTube, podcasts, bibliotecas públicas, y comunidades online. La inversión en tiempo puede superar la inversión en dinero.');
+    } else if (budget === '500+') {
+      baseTips.push('Con mayor presupuesto disponible, considera coaching personalizado o cursos premium que aceleren tu progreso. Invierte en herramientas de calidad que uses diariamente.');
     }
-    
-    // Tips based on goals
-    if (goals.some(goal => goal.toLowerCase().includes('carrera') || goal.toLowerCase().includes('profesional'))) {
-      baseTips.push('Desarrolla un plan de carrera a 5 años con hitos específicos. Revísalo y ajústalo cada 6 meses.');
-      baseTips.push('Identifica las habilidades más demandadas en tu industria y créate un plan de desarrollo específico.');
+
+    // Tips based on experience level
+    switch(userProfile.experience) {
+      case 'principiante':
+        baseTips.push('Como principiante, enfócate en construir hábitos pequeños pero consistentes. No intentes cambiar todo a la vez - elige 1-2 áreas máximo para empezar.');
+        break;
+      case 'intermedio':
+        baseTips.push('Con tu experiencia intermedia, es tiempo de especializarte. Elige un área donde ya tienes base y profundiza para convertirte en experto.');
+        break;
+      case 'avanzado':
+        baseTips.push('Con tu experiencia avanzada, considera mentorear a otros. Enseñar consolidará tu conocimiento y expandirá tu red profesional.');
+        break;
     }
-    
-    if (goals.some(goal => goal.toLowerCase().includes('salud') || goal.toLowerCase().includes('fitness'))) {
-      baseTips.push('Integra el ejercicio en tu rutina diaria como si fuera una cita médica importante. La consistencia es más valiosa que la intensidad.');
-      baseTips.push('Combina ejercicio con aprendizaje: escucha podcasts o audiolibros mientras caminas o haces cardio.');
+
+    // Tips based on specific hobby combinations
+    const hasCreativeHobbies = userProfile.preferences.hobbies.some(h => 
+      h.includes('Música') || h.includes('Pintura') || h.includes('Fotografía') || h.includes('Escritura')
+    );
+    const hasTechHobbies = userProfile.preferences.hobbies.some(h => 
+      h.includes('Programación') || h.includes('Videojuegos')
+    );
+
+    if (hasCreativeHobbies && hasTechHobbies) {
+      baseTips.push('Tu combinación de hobbies creativos y técnicos es única. Considera proyectos que fusionen ambos: desarrollo de videojuegos, arte digital, o aplicaciones creativas.');
     }
-    
-    if (goals.some(goal => goal.toLowerCase().includes('habilidad') || goal.toLowerCase().includes('aprender'))) {
-      baseTips.push('Aplica la regla del 1% diario: mejora un poco cada día. En un año habrás mejorado 37 veces.');
-      baseTips.push('Enseña lo que aprendes. Explicar conceptos a otros consolidará tu propio aprendizaje.');
-    }
-    
-    // Tips based on profession
-    if (userProfile.profession.toLowerCase().includes('programador') || userProfile.profession.toLowerCase().includes('desarrollador')) {
-      baseTips.push('Mantente actualizado con las últimas tecnologías, pero enfócate en dominar los fundamentos que trascienden frameworks específicos.');
-      baseTips.push('Contribuye a proyectos open source. Es una excelente forma de aprender, hacer networking y construir tu portafolio.');
-    }
-    
-    return baseTips.slice(0, 8); // Limit to 8 tips
+
+    // Remove duplicates and limit
+    return [...new Set(baseTips)].slice(0, 10);
   };
 
   const personalizedStrengths = generatePersonalizedStrengths();
@@ -384,20 +544,33 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
       <div className="p-6">
         {activeTab === 'insights' && (
           <div className="space-y-8">
+            {adjustedPlan && (
+              <div className="bg-green-50 rounded-lg p-4 border border-green-200 mb-6">
+                <div className="flex items-center gap-2 mb-2">
+                  <Wand2 className="w-5 h-5 text-green-600" />
+                  <span className="font-semibold text-green-800">Plan Ajustado</span>
+                </div>
+                <p className="text-sm text-green-700">
+                  Este plan ha sido ajustado basándose en tu feedback para mejor adaptarse a tus necesidades.
+                </p>
+              </div>
+            )}
+            
             <div className="text-center mb-8">
               <h3 className="text-3xl font-bold text-gray-900 mb-2">Tus Insights Personalizados</h3>
               <p className="text-gray-600">Basado en tu perfil y objetivos</p>
             </div>
 
+            {/* Use currentPlan for all data */}
             <div className="grid md:grid-cols-2 gap-6">
-              {/* Strengths */}
+              {/* Strengths using currentPlan */}
               <div className="bg-green-50 rounded-lg p-6 border border-green-200">
                 <h4 className="text-xl font-semibold text-green-800 mb-4 flex items-center gap-2">
                   <TrendingUp className="w-5 h-5" />
                   Tus Fortalezas
                 </h4>
                 <div className="space-y-3">
-                  {personalizedStrengths.map((strength, index) => (
+                  {generatePersonalizedStrengths().map((strength, index) => (
                     <div key={index} className="bg-white rounded-lg p-4 border border-green-200">
                       <div className="flex items-start gap-3">
                         <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
@@ -454,7 +627,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
                   Áreas de Mejora
                 </h4>
                 <div className="space-y-3">
-                  {plan.personalizedInsights.improvementAreas.map((area, index) => (
+                  {currentPlan.personalizedInsights.improvementAreas.map((area, index) => (
                     <div key={index} className="bg-white rounded-lg p-4 border border-blue-200">
                       <div className="flex items-start gap-3">
                         <ChevronRight className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
@@ -499,9 +672,9 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
               {/* User profile context */}
               <div className="mb-4 p-3 bg-white rounded-lg border border-purple-200">
                 <p className="text-sm text-purple-700">
-                  <strong>Personalizado para:</strong> {plan.userProfile.name}, {plan.userProfile.age}, {plan.userProfile.profession} | 
-                  <strong> Tiempo disponible:</strong> {plan.userProfile.timeAvailable} | 
-                  <strong> Estilo:</strong> {plan.userProfile.preferences.workStyle}
+                  <strong>Personalizado para:</strong> {currentPlan.userProfile.name}, {currentPlan.userProfile.age}, {currentPlan.userProfile.profession} | 
+                  <strong> Tiempo disponible:</strong> {currentPlan.userProfile.timeAvailable} | 
+                  <strong> Estilo:</strong> {currentPlan.userProfile.preferences.workStyle}
                 </p>
               </div>
               
@@ -519,12 +692,12 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
                         <div className="flex flex-wrap gap-1 mb-3">
                           {index < 2 && (
                             <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-                              Grupo etario: {plan.userProfile.age}
+                              Grupo etario: {currentPlan.userProfile.age}
                             </span>
                           )}
                           {index >= 2 && index < 4 && (
                             <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">
-                              Tiempo: {plan.userProfile.timeAvailable}
+                              Tiempo: {currentPlan.userProfile.timeAvailable}
                             </span>
                           )}
                           {index >= 4 && index < 6 && (
@@ -534,7 +707,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
                           )}
                           {index >= 6 && (
                             <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full">
-                              Profesión: {plan.userProfile.profession}
+                              Profesión: {currentPlan.userProfile.profession}
                             </span>
                           )}
                         </div>
@@ -601,7 +774,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
                   Tu Estilo de Aprendizaje
                 </h4>
                 <div className="bg-white rounded-lg p-4 border border-yellow-200 mb-4">
-                  <p className="text-yellow-700 font-medium mb-3">{plan.personalizedInsights.preferredLearningStyle}</p>
+                  <p className="text-yellow-700 font-medium mb-3">{currentPlan.personalizedInsights.preferredLearningStyle}</p>
                   
                   <div className="space-y-3">
                     <div>
@@ -638,7 +811,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
                   Tu Estilo de Motivación
                 </h4>
                 <div className="bg-white rounded-lg p-4 border border-pink-200 mb-4">
-                  <p className="text-pink-700 font-medium mb-3">{plan.personalizedInsights.motivationStyle}</p>
+                  <p className="text-pink-700 font-medium mb-3">{currentPlan.personalizedInsights.motivationStyle}</p>
                   
                   <div className="space-y-3">
                     <div>
@@ -690,7 +863,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
                 Optimización del Tiempo
               </h4>
               <div className="grid gap-4">
-                {plan.personalizedInsights.timeOptimization.map((tip, index) => (
+                {currentPlan.personalizedInsights.timeOptimization.map((tip, index) => (
                   <div key={index} className="bg-white rounded-lg p-4 border border-gray-200">
                     <div className="flex items-start gap-4">
                       <div className="bg-purple-100 rounded-full p-3 flex-shrink-0">
@@ -731,12 +904,12 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
               <div className="mt-6 grid md:grid-cols-3 gap-4">
                 <div className="bg-blue-100 rounded-lg p-4 text-center">
                   <h5 className="text-sm font-semibold text-blue-800 mb-2">⏰ Tiempo Disponible</h5>
-                  <p className="text-lg font-bold text-blue-900">{plan.userProfile.timeAvailable}</p>
+                  <p className="text-lg font-bold text-blue-900">{currentPlan.userProfile.timeAvailable}</p>
                   <p className="text-xs text-blue-700">por semana</p>
                 </div>
                 <div className="bg-green-100 rounded-lg p-4 text-center">
                   <h5 className="text-sm font-semibold text-green-800 mb-2">🎯 Técnicas Aplicadas</h5>
-                  <p className="text-lg font-bold text-green-900">0/{plan.personalizedInsights.timeOptimization.length}</p>
+                  <p className="text-lg font-bold text-green-900">0/{currentPlan.personalizedInsights.timeOptimization.length}</p>
                   <p className="text-xs text-green-700">estrategias activas</p>
                 </div>
                 <div className="bg-purple-100 rounded-lg p-4 text-center">
@@ -753,8 +926,88 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
           <div className="space-y-8">
             <div className="text-center mb-8">
               <h3 className="text-3xl font-bold text-gray-900 mb-2">¡Comparte tu Experiencia!</h3>
-              <p className="text-gray-600">Tu feedback nos ayuda a mejorar y personalizar aún más tu plan</p>
+              <p className="text-gray-600">Tu feedback nos ayuda a ajustar automáticamente tu plan</p>
             </div>
+
+            {/* Feedback Analysis Results */}
+            {feedbackAnalysis && showAdjustments && (
+              <div className="max-w-4xl mx-auto mb-8">
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-blue-500 text-white rounded-full p-3">
+                      <Wand2 className="w-6 h-6" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl font-semibold text-blue-900 mb-3">
+                        ¡Plan Ajustado Automáticamente!
+                      </h4>
+                      <p className="text-blue-800 mb-4">{feedbackAnalysis.summary}</p>
+                      
+                      <div className="bg-white rounded-lg p-4 mb-4">
+                        <h5 className="font-semibold text-gray-800 mb-3">Ajustes realizados:</h5>
+                        <div className="space-y-2">
+                          {feedbackAnalysis.adjustments.map((adjustment, index) => (
+                            <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                              <div className="bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <Check className="w-3 h-3" />
+                              </div>
+                              <div>
+                                <p className="font-medium text-gray-800 capitalize">
+                                  {adjustment.section === 'professional' ? 'Plan Profesional' :
+                                   adjustment.section === 'fitness' ? 'Plan de Fitness' :
+                                   adjustment.section === 'hobbies' ? 'Plan de Hobbies' :
+                                   adjustment.section === 'nutrition' ? 'Plan de Nutrición' :
+                                   'Insights Personalizados'}
+                                </p>
+                                <p className="text-sm text-gray-600">{adjustment.description}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-gray-600">Confianza del análisis:</span>
+                          <div className="flex gap-1">
+                            {[1,2,3,4,5].map(i => (
+                              <Star 
+                                key={i} 
+                                className={`w-4 h-4 ${
+                                  i <= Math.round(feedbackAnalysis.confidence * 5) 
+                                    ? 'text-yellow-400 fill-current' 
+                                    : 'text-gray-300'
+                                }`} 
+                              />
+                            ))}
+                          </div>
+                          <span className="text-sm text-gray-600">
+                            ({Math.round(feedbackAnalysis.confidence * 100)}%)
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-3">
+                        <button
+                          onClick={handleAcceptAdjustments}
+                          className="flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                        >
+                          <Check className="w-5 h-5" />
+                          Aceptar Ajustes
+                        </button>
+                        <button
+                          onClick={handleRejectAdjustments}
+                          className="flex items-center gap-2 bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors"
+                        >
+                          <RefreshCw className="w-5 h-5" />
+                          Mantener Plan Original
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Feedback Form */}
             <div className="max-w-3xl mx-auto">
@@ -767,47 +1020,91 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
                     <textarea
                       rows={6}
                       className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 text-base transition-colors duration-200 resize-none"
-                      placeholder="Cuéntanos qué aspectos te gustaron más, qué mejorías sugieres, y cómo se siente este plan personalizado para tu estilo de vida..."
+                      placeholder="Ejemplo: 'Los ejercicios son muy intensos para principiantes', 'Me gusta el plan profesional pero los hobbies no me interesan', 'No tengo tiempo para cocinar comidas tan complicadas'..."
                       value={feedback}
                       onChange={(e) => setFeedback(e.target.value)}
                     />
                   </div>
 
+                  {/* Enhanced feedback guidance */}
                   <div className="bg-white rounded-lg p-6 border border-purple-200">
-                    <h4 className="font-semibold text-gray-800 mb-3">Algunas preguntas para guiarte:</h4>
-                    <ul className="space-y-2 text-sm text-gray-600">
-                      <li>• ¿Los insights personalizados fueron precisos y útiles?</li>
-                      <li>• ¿El plan profesional se alinea con tus objetivos de carrera?</li>
-                      <li>• ¿Las rutinas de fitness son apropiadas para tu nivel y tiempo disponible?</li>
-                      <li>• ¿Los hobbies y proyectos sugeridos te emocionan?</li>
-                      <li>• ¿El plan nutricional es realista y atractivo para ti?</li>
-                      <li>• ¿Qué funcionalidades adicionales te gustaría ver?</li>
-                    </ul>
+                    <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                      <AlertCircle className="w-5 h-5 text-blue-500" />
+                      Guía para feedback efectivo:
+                    </h4>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <h5 className="text-sm font-medium text-gray-700 mb-2">Ejemplos de feedback útil:</h5>
+                        <ul className="space-y-1 text-xs text-gray-600">
+                          <li>• "Los ejercicios son muy intensos"</li>
+                          <li>• "Prefiero hobbies más creativos"</li>
+                          <li>• "No tengo tiempo para cocinar"</li>
+                          <li>• "Los objetivos profesionales son muy ambiciosos"</li>
+                          <li>• "Necesito más variedad en las rutinas"</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h5 className="text-sm font-medium text-gray-700 mb-2">Palabras clave que reconozco:</h5>
+                        <div className="flex flex-wrap gap-1">
+                          {['muy intenso', 'demasiado', 'no me gusta', 'prefiero', 'cambiar', 'más tiempo', 'simple', 'complicado'].map(keyword => (
+                            <span key={keyword} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                              {keyword}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <button
                       type="button"
-                      onClick={handleSubmitFeedback}
-                      disabled={!feedback.trim()}
-                      className="inline-flex justify-center items-center gap-2 py-4 px-8 border border-transparent rounded-lg shadow-sm text-lg font-semibold text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-200 cursor-pointer hover:scale-105 transform disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                      onClick={handleAnalyzeFeedback}
+                      disabled={!feedback.trim() || isAnalyzing}
+                      className="inline-flex justify-center items-center gap-2 py-4 px-8 border border-transparent rounded-lg shadow-sm text-lg font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 cursor-pointer hover:scale-105 transform disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                     >
-                      <MessageSquare className="w-5 h-5" />
-                      {isEditing ? 'Actualizar Feedback' : 'Enviar Feedback y Guardar'}
+                      {isAnalyzing ? (
+                        <>
+                          <RefreshCw className="w-5 h-5 animate-spin" />
+                          Analizando Feedback...
+                        </>
+                      ) : (
+                        <>
+                          <Wand2 className="w-5 h-5" />
+                          Analizar y Ajustar Plan
+                        </>
+                      )}
                     </button>
                     
                     <button
                       type="button"
-                      onClick={() => setFeedback('')}
-                      className="inline-flex justify-center items-center gap-2 py-4 px-6 border border-gray-300 rounded-lg shadow-sm text-lg font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-200 cursor-pointer"
+                      onClick={handleSubmitFeedback}
+                      disabled={!feedback.trim()}
+                      className="inline-flex justify-center items-center gap-2 py-4 px-8 border border-gray-300 rounded-lg shadow-sm text-lg font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-200 cursor-pointer"
                     >
-                      Limpiar
+                      <MessageSquare className="w-5 h-5" />
+                      Solo Guardar Feedback
                     </button>
                   </div>
 
-                  {feedback.trim() && (
+                  {/* Analysis status */}
+                  {isAnalyzing && (
+                    <div className="text-center">
+                      <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                        <div className="flex items-center justify-center gap-3 mb-2">
+                          <RefreshCw className="w-5 h-5 text-blue-600 animate-spin" />
+                          <span className="font-medium text-blue-800">Analizando tu feedback...</span>
+                        </div>
+                        <p className="text-sm text-blue-600">
+                          Estoy procesando tus comentarios para generar ajustes personalizados
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {feedback.trim() && !isAnalyzing && (
                     <div className="text-center text-sm text-gray-600">
-                      <p>¡Gracias por tomarte el tiempo de compartir tu experiencia con nosotros! 🙏</p>
+                      <p>💡 Tip: Cuanto más específico seas, mejor podré ajustar tu plan</p>
                     </div>
                   )}
                 </div>
@@ -818,7 +1115,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
             <div className="text-center">
               <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-6 py-3 rounded-lg border border-green-200">
                 <CheckCircle className="w-5 h-5" />
-                <span className="font-medium">¡Has completado tu plan de estilo de vida personalizado!</span>
+                <span className="font-medium">¡Tu plan se adapta automáticamente a tus necesidades!</span>
               </div>
             </div>
           </div>
@@ -826,15 +1123,27 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
 
         {activeTab === 'professional' && (
           <div className="space-y-8">
+            {adjustedPlan && (
+              <div className="bg-blue-50 rounded-lg p-4 border border-blue-200 mb-6">
+                <div className="flex items-center gap-2 mb-2">
+                  <Wand2 className="w-5 h-5 text-blue-600" />
+                  <span className="font-semibold text-blue-800">Plan Profesional Ajustado</span>
+                </div>
+                <p className="text-sm text-blue-700">
+                  Los objetivos y plazos han sido ajustados según tu feedback.
+                </p>
+              </div>
+            )}
+            
             <h3 className="text-2xl font-bold text-gray-900 mb-6">Plan Profesional</h3>
             
-            {/* Career Path */}
+            {/* Career Path using currentPlan */}
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6">
               <h4 className="text-xl font-semibold text-gray-800 mb-4">Ruta de Carrera</h4>
               <div className="flex items-center justify-between mb-4">
                 <div className="text-center">
                   <div className="bg-blue-500 text-white rounded-full px-4 py-2 font-semibold">
-                    {plan.professional.careerPath.currentRole}
+                    {currentPlan.professional.careerPath.currentRole}
                   </div>
                   <p className="text-sm text-gray-600 mt-1">Actual</p>
                 </div>
@@ -842,25 +1151,25 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
                   <div className="h-2 bg-blue-200 rounded-full">
                     <div className="h-2 bg-blue-500 rounded-full w-1/3"></div>
                   </div>
-                  <p className="text-xs text-center text-gray-600 mt-1">{plan.professional.careerPath.estimatedTimeframe}</p>
+                  <p className="text-xs text-center text-gray-600 mt-1">{currentPlan.professional.careerPath.estimatedTimeframe}</p>
                 </div>
                 <div className="text-center">
                   <div className="bg-indigo-500 text-white rounded-full px-4 py-2 font-semibold">
-                    {plan.professional.careerPath.targetRole}
+                    {currentPlan.professional.careerPath.targetRole}
                   </div>
                   <p className="text-sm text-gray-600 mt-1">Objetivo</p>
                 </div>
               </div>
               <p className="text-sm text-gray-600 text-center">
-                Potencial de crecimiento salarial: {plan.professional.careerPath.salaryGrowthPotential}
+                Potencial de crecimiento salarial: {currentPlan.professional.careerPath.salaryGrowthPotential}
               </p>
             </div>
 
-            {/* Goals with Progress */}
+            {/* Goals with Progress using currentPlan */}
             <div className="bg-white border rounded-lg p-6">
               <h4 className="text-xl font-semibold text-gray-800 mb-4">Objetivos Profesionales</h4>
               <div className="space-y-4">
-                {plan.professional.goals.map((goal) => (
+                {currentPlan.professional.goals.map((goal) => (
                   <div key={goal.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
@@ -918,7 +1227,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
               <div className="bg-white border rounded-lg p-6">
                 <h4 className="text-lg font-semibold text-gray-800 mb-4">Habilidades a Desarrollar</h4>
                 <div className="space-y-3">
-                  {plan.professional.skillsToAcquire.map((skill, index) => (
+                  {currentPlan.professional.skillsToAcquire.map((skill, index) => (
                     <div key={index} className="p-3 bg-gray-50 rounded border">
                       <div className="flex justify-between items-start mb-2">
                         <h5 className="font-medium">{skill.name}</h5>
@@ -941,7 +1250,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
               <div className="bg-white border rounded-lg p-6">
                 <h4 className="text-lg font-semibold text-gray-800 mb-4">Recursos Recomendados</h4>
                 <div className="space-y-3">
-                  {plan.professional.resources.map((resource, index) => (
+                  {currentPlan.professional.resources.map((resource, index) => (
                     <div key={index} className="p-3 border rounded hover:bg-gray-50 transition-colors">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -982,7 +1291,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
             <div className="bg-white border rounded-lg p-6">
               <h4 className="text-xl font-semibold text-gray-800 mb-4">Rutinas de Ejercicio</h4>
               <div className="grid gap-4">
-                {plan.fitness.workoutRoutine.map((workout, index) => (
+                {currentPlan.fitness.workoutRoutine.map((workout, index) => (
                   <div key={index} className="p-4 border rounded-lg hover:bg-gray-50 transition-colors">
                     <div className="flex justify-between items-start mb-3">
                       <h5 className="font-semibold text-lg">{workout.name}</h5>
@@ -1029,7 +1338,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
                 Seguimiento de Progreso
               </h4>
               <div className="grid md:grid-cols-2 gap-4">
-                {plan.fitness.progressTracking.map((metric, index) => (
+                {currentPlan.fitness.progressTracking.map((metric, index) => (
                   <div key={index} className="p-4 border rounded-lg">
                     <div className="flex justify-between items-center mb-2">
                       <h5 className="font-medium">{metric.name}</h5>
@@ -1060,7 +1369,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
             
             {/* Selected Hobbies */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {plan.hobbies.selectedHobbies.map((hobby, index) => (
+              {currentPlan.hobbies.selectedHobbies.map((hobby, index) => (
                 <div key={index} className="bg-white border rounded-lg p-6 hover:shadow-lg transition-shadow">
                   <h4 className="text-lg font-semibold text-gray-800 mb-3">{hobby.name}</h4>
                   
@@ -1114,7 +1423,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
             <div className="bg-white border rounded-lg p-6">
               <h4 className="text-xl font-semibold text-gray-800 mb-4">Proyectos Sugeridos</h4>
               <div className="grid md:grid-cols-2 gap-4">
-                {plan.hobbies.projects.map((project) => (
+                {currentPlan.hobbies.projects.map((project) => (
                   <div key={project.id} className="p-4 border rounded-lg hover:bg-gray-50 transition-colors">
                     <div className="flex justify-between items-start mb-3">
                       <h5 className="font-semibold">{project.name}</h5>
@@ -1151,7 +1460,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
             <div className="bg-white border rounded-lg p-6">
               <h4 className="text-xl font-semibold text-gray-800 mb-4">Recursos de Aprendizaje</h4>
               <div className="grid md:grid-cols-2 gap-4">
-                {plan.hobbies.resources.map((resource, index) => (
+                {currentPlan.hobbies.resources.map((resource, index) => (
                   <div key={index} className="p-4 border rounded hover:bg-gray-50 transition-colors">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -1189,14 +1498,14 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
             
             {/* Diet Overview */}
             <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-6">
-              <h4 className="text-xl font-semibold text-gray-800 mb-4">Tu Plan Alimentario: {plan.nutrition.dietType}</h4>
+              <h4 className="text-xl font-semibold text-gray-800 mb-4">Tu Plan Alimentario: {currentPlan.nutrition.dietType}</h4>
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="text-center">
                   <div className="bg-green-500 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-2">
                     <UtensilsCrossed className="w-8 h-8" />
                   </div>
                   <h5 className="font-semibold">Tipo de Dieta</h5>
-                  <p className="text-sm text-gray-600">{plan.nutrition.dietType}</p>
+                  <p className="text-sm text-gray-600">{currentPlan.nutrition.dietType}</p>
                 </div>
                 <div className="text-center">
                   <div className="bg-blue-500 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-2">
@@ -1219,7 +1528,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
             <div className="bg-white border rounded-lg p-6">
               <h4 className="text-xl font-semibold text-gray-800 mb-4">Plan Semanal de Comidas</h4>
               <div className="space-y-4">
-                {plan.nutrition.mealPlan.map((dayPlan, index) => (
+                {currentPlan.nutrition.mealPlan.map((dayPlan, index) => (
                   <div key={index} className="border rounded-lg p-4">
                     <h5 className="font-semibold text-lg mb-3 text-purple-600">{dayPlan.day}</h5>
                     
@@ -1282,7 +1591,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
                 <div>
                   <h5 className="font-medium text-gray-700 mb-3">Proteínas</h5>
                   <ul className="space-y-1">
-                    {plan.nutrition.shoppingList.proteins.map((item, index) => (
+                    {currentPlan.nutrition.shoppingList.proteins.map((item, index) => (
                       <li key={index} className="text-sm text-gray-600 flex items-center gap-2">
                         <input type="checkbox" className="rounded border-gray-300 text-green-600 focus:ring-green-500" />
                         {item}
@@ -1294,7 +1603,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
                 <div>
                   <h5 className="font-medium text-gray-700 mb-3">Vegetales</h5>
                   <ul className="space-y-1">
-                    {plan.nutrition.shoppingList.vegetables.map((item, index) => (
+                    {currentPlan.nutrition.shoppingList.vegetables.map((item, index) => (
                       <li key={index} className="text-sm text-gray-600 flex items-center gap-2">
                         <input type="checkbox" className="rounded border-gray-300 text-green-600 focus:ring-green-500" />
                         {item}
@@ -1306,7 +1615,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
                 <div>
                   <h5 className="font-medium text-gray-700 mb-3">Frutas</h5>
                   <ul className="space-y-1">
-                    {plan.nutrition.shoppingList.fruits.map((item, index) => (
+                    {currentPlan.nutrition.shoppingList.fruits.map((item, index) => (
                       <li key={index} className="text-sm text-gray-600 flex items-center gap-2">
                         <input type="checkbox" className="rounded border-gray-300 text-green-600 focus:ring-green-500" />
                         {item}
@@ -1318,7 +1627,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
               
               <div className="mt-4 pt-4 border-t">
                 <p className="text-sm font-medium text-gray-700">
-                  Costo estimado semanal: <span className="text-green-600">{plan.nutrition.shoppingList.estimatedCost}</span>
+                  Costo estimado semanal: <span className="text-green-600">{currentPlan.nutrition.shoppingList.estimatedCost}</span>
                 </p>
               </div>
             </div>
@@ -1331,7 +1640,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
                   <h5 className="font-medium text-blue-700 mb-3">Objetivo Diario</h5>
                   <div className="flex items-center gap-3">
                     <div className="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center">
-                      <span className="font-bold">{plan.nutrition.hydrationPlan.dailyWaterGoal}L</span>
+                      <span className="font-bold">{currentPlan.nutrition.hydrationPlan.dailyWaterGoal}L</span>
                     </div>
                     <div>
                       <p className="text-sm text-blue-700">Meta de agua diaria</p>
@@ -1343,7 +1652,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
                 <div>
                   <h5 className="font-medium text-blue-700 mb-3">Recordatorios</h5>
                   <ul className="space-y-1">
-                    {plan.nutrition.hydrationPlan.reminders.map((reminder, index) => (
+                    {currentPlan.nutrition.hydrationPlan.reminders.map((reminder, index) => (
                       <li key={index} className="text-sm text-blue-700 flex items-center gap-2">
                         <Clock className="w-3 h-3" />
                         {reminder}
@@ -1358,7 +1667,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
             <div className="bg-white border rounded-lg p-6">
               <h4 className="text-xl font-semibold text-gray-800 mb-4">Suplementos Recomendados</h4>
               <div className="grid md:grid-cols-2 gap-4">
-                {plan.nutrition.supplements.map((supplement, index) => (
+                {currentPlan.nutrition.supplements.map((supplement, index) => (
                   <div key={index} className={`p-4 rounded-lg border ${
                     supplement.optional ? 'border-gray-200 bg-gray-50' : 'border-green-200 bg-green-50'
                   }`}>
@@ -1386,7 +1695,7 @@ export default function LifestylePlan({ plan, onFeedback, onSave, isEditing = fa
           <div className="space-y-6">
             <h3 className="text-2xl font-bold text-gray-900 mb-6">Tus Logros</h3>
             <div className="grid md:grid-cols-2 gap-4">
-              {plan.achievements.map((achievement) => (
+              {currentPlan.achievements.map((achievement) => (
                 <div key={achievement.id} className={`p-6 rounded-lg border-2 transition-all duration-200 ${
                   achievement.unlocked 
                     ? 'border-green-200 bg-green-50 shadow-md' 

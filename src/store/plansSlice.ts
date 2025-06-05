@@ -68,7 +68,7 @@ const plansSlice = createSlice({
       const newPlan: LifestylePlan = {
         ...plan,
         id: uuidv4(),
-        name: name || `Plan de ${plan.userProfile.name} - ${new Date().toLocaleDateString()}`,
+        name: name || `${plan.userProfile.name}'s Plan - ${new Date().toLocaleDateString()}`,
         createdAt: now,
         updatedAt: now,
       };
@@ -131,7 +131,7 @@ const plansSlice = createSlice({
         const duplicatedPlan: LifestylePlan = {
           ...originalPlan,
           id: uuidv4(),
-          name: `${originalPlan.name} (Copia)`,
+          name: `${originalPlan.name} (Copy)`,
           createdAt: now,
           updatedAt: now,
           isFavorite: false,

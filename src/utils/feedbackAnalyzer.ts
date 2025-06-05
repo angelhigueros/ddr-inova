@@ -18,12 +18,12 @@ export function analyzeFeedback(feedback: string, currentPlan: LifestylePlan): F
   const feedbackLower = feedback.toLowerCase();
   
   // Analyze professional feedback
-  if (feedbackLower.includes('trabajo') || feedbackLower.includes('carrera') || feedbackLower.includes('profesional')) {
-    if (feedbackLower.includes('muy ambicioso') || feedbackLower.includes('demasiado rápido') || feedbackLower.includes('unrealista')) {
+  if (feedbackLower.includes('work') || feedbackLower.includes('career') || feedbackLower.includes('professional')) {
+    if (feedbackLower.includes('too ambitious') || feedbackLower.includes('too fast') || feedbackLower.includes('unrealistic')) {
       adjustments.push({
         section: 'professional',
         type: 'modify',
-        description: 'Ajustar objetivos profesionales para ser más realistas',
+        description: 'Adjust professional goals to be more realistic',
         specificChanges: {
           extendTimeframes: true,
           reduceGoalComplexity: true,
@@ -32,11 +32,11 @@ export function analyzeFeedback(feedback: string, currentPlan: LifestylePlan): F
       });
     }
     
-    if (feedbackLower.includes('más tiempo') || feedbackLower.includes('más lento') || feedbackLower.includes('paso a paso')) {
+    if (feedbackLower.includes('more time') || feedbackLower.includes('slower') || feedbackLower.includes('step by step')) {
       adjustments.push({
         section: 'professional',
         type: 'modify',
-        description: 'Extender plazos y dividir objetivos en pasos más pequeños',
+        description: 'Extend deadlines and break down goals into smaller steps',
         specificChanges: {
           extendTimeframes: true,
           breakDownGoals: true
@@ -44,11 +44,11 @@ export function analyzeFeedback(feedback: string, currentPlan: LifestylePlan): F
       });
     }
 
-    if (feedbackLower.includes('falta') && (feedbackLower.includes('habilidad') || feedbackLower.includes('skill'))) {
+    if (feedbackLower.includes('lacking') && (feedbackLower.includes('skill') || feedbackLower.includes('ability'))) {
       adjustments.push({
         section: 'professional',
         type: 'add',
-        description: 'Agregar más habilidades específicas basadas en feedback',
+        description: 'Add more specific skills based on feedback',
         specificChanges: {
           addSkills: extractMentionedSkills(feedback)
         }
@@ -57,12 +57,12 @@ export function analyzeFeedback(feedback: string, currentPlan: LifestylePlan): F
   }
 
   // Analyze fitness feedback
-  if (feedbackLower.includes('ejercicio') || feedbackLower.includes('fitness') || feedbackLower.includes('entrenam')) {
-    if (feedbackLower.includes('muy intenso') || feedbackLower.includes('demasiado difícil') || feedbackLower.includes('principiante')) {
+  if (feedbackLower.includes('exercise') || feedbackLower.includes('fitness') || feedbackLower.includes('workout')) {
+    if (feedbackLower.includes('too intense') || feedbackLower.includes('too difficult') || feedbackLower.includes('beginner')) {
       adjustments.push({
         section: 'fitness',
         type: 'modify',
-        description: 'Reducir intensidad de ejercicios y ajustar para principiantes',
+        description: 'Reduce exercise intensity and adjust for beginners',
         specificChanges: {
           reduceDifficulty: true,
           shortenDuration: true,
@@ -71,11 +71,11 @@ export function analyzeFeedback(feedback: string, currentPlan: LifestylePlan): F
       });
     }
 
-    if (feedbackLower.includes('más variedad') || feedbackLower.includes('aburrido') || feedbackLower.includes('repetitivo')) {
+    if (feedbackLower.includes('more variety') || feedbackLower.includes('boring') || feedbackLower.includes('repetitive')) {
       adjustments.push({
         section: 'fitness',
         type: 'add',
-        description: 'Agregar más variedad en rutinas de ejercicio',
+        description: 'Add more variety in exercise routines',
         specificChanges: {
           addVariety: true,
           alternativeExercises: true
@@ -83,11 +83,11 @@ export function analyzeFeedback(feedback: string, currentPlan: LifestylePlan): F
       });
     }
 
-    if (feedbackLower.includes('lesión') || feedbackLower.includes('dolor') || feedbackLower.includes('limitación')) {
+    if (feedbackLower.includes('injury') || feedbackLower.includes('pain') || feedbackLower.includes('limitation')) {
       adjustments.push({
         section: 'fitness',
         type: 'modify',
-        description: 'Ajustar ejercicios para limitaciones físicas',
+        description: 'Adjust exercises for physical limitations',
         specificChanges: {
           lowImpactOptions: true,
           modifyForLimitations: true
@@ -97,12 +97,12 @@ export function analyzeFeedback(feedback: string, currentPlan: LifestylePlan): F
   }
 
   // Analyze hobbies feedback
-  if (feedbackLower.includes('hobby') || feedbackLower.includes('tiempo libre') || feedbackLower.includes('interés')) {
-    if (feedbackLower.includes('no me gusta') || feedbackLower.includes('no interesa') || feedbackLower.includes('cambiar')) {
+  if (feedbackLower.includes('hobby') || feedbackLower.includes('free time') || feedbackLower.includes('interest')) {
+    if (feedbackLower.includes('don\'t like') || feedbackLower.includes('not interested') || feedbackLower.includes('change')) {
       adjustments.push({
         section: 'hobbies',
         type: 'replace',
-        description: 'Reemplazar hobbies que no interesan al usuario',
+        description: 'Replace hobbies that don\'t interest the user',
         specificChanges: {
           replaceHobbies: extractDislikedHobbies(feedback),
           suggestAlternatives: true
@@ -110,11 +110,11 @@ export function analyzeFeedback(feedback: string, currentPlan: LifestylePlan): F
       });
     }
 
-    if (feedbackLower.includes('más tiempo') || feedbackLower.includes('dedicar más')) {
+    if (feedbackLower.includes('more time') || feedbackLower.includes('dedicate more')) {
       adjustments.push({
         section: 'hobbies',
         type: 'modify',
-        description: 'Aumentar tiempo dedicado a hobbies favoritos',
+        description: 'Increase time dedicated to favorite hobbies',
         specificChanges: {
           increaseTimeAllocation: true
         }
@@ -123,12 +123,12 @@ export function analyzeFeedback(feedback: string, currentPlan: LifestylePlan): F
   }
 
   // Analyze nutrition feedback
-  if (feedbackLower.includes('comida') || feedbackLower.includes('dieta') || feedbackLower.includes('nutrición') || feedbackLower.includes('cocina')) {
-    if (feedbackLower.includes('muy complicado') || feedbackLower.includes('no tengo tiempo para cocinar') || feedbackLower.includes('simple')) {
+  if (feedbackLower.includes('food') || feedbackLower.includes('diet') || feedbackLower.includes('nutrition') || feedbackLower.includes('cooking')) {
+    if (feedbackLower.includes('too complicated') || feedbackLower.includes('no time to cook') || feedbackLower.includes('simple')) {
       adjustments.push({
         section: 'nutrition',
         type: 'modify',
-        description: 'Simplificar plan nutricional con comidas más fáciles',
+        description: 'Simplify nutrition plan with easier meals',
         specificChanges: {
           simplifyMeals: true,
           quickPrep: true,
@@ -137,11 +137,11 @@ export function analyzeFeedback(feedback: string, currentPlan: LifestylePlan): F
       });
     }
 
-    if (feedbackLower.includes('alergia') || feedbackLower.includes('no me gusta') || feedbackLower.includes('vegetariano') || feedbackLower.includes('vegano')) {
+    if (feedbackLower.includes('allergy') || feedbackLower.includes('don\'t like') || feedbackLower.includes('vegetarian') || feedbackLower.includes('vegan')) {
       adjustments.push({
         section: 'nutrition',
         type: 'modify',
-        description: 'Ajustar plan nutricional por restricciones o preferencias',
+        description: 'Adjust nutrition plan for restrictions or preferences',
         specificChanges: {
           dietaryRestrictions: extractDietaryInfo(feedback)
         }
@@ -150,11 +150,11 @@ export function analyzeFeedback(feedback: string, currentPlan: LifestylePlan): F
   }
 
   // Analyze general feedback about time management
-  if (feedbackLower.includes('no tengo tiempo') || feedbackLower.includes('muy ocupado') || feedbackLower.includes('sobrecargado')) {
+  if (feedbackLower.includes('no time') || feedbackLower.includes('too busy') || feedbackLower.includes('overloaded')) {
     adjustments.push({
       section: 'insights',
       type: 'modify',
-      description: 'Optimizar gestión de tiempo y reducir carga general',
+      description: 'Optimize time management and reduce general load',
       specificChanges: {
         optimizeTimeManagement: true,
         prioritizeHighImpact: true,
@@ -164,11 +164,11 @@ export function analyzeFeedback(feedback: string, currentPlan: LifestylePlan): F
   }
 
   // Analyze feedback about motivation and mindset
-  if (feedbackLower.includes('desmotiv') || feedbackLower.includes('abrumado') || feedbackLower.includes('demasiado')) {
+  if (feedbackLower.includes('unmotivated') || feedbackLower.includes('overwhelmed') || feedbackLower.includes('too much')) {
     adjustments.push({
       section: 'insights',
       type: 'add',
-      description: 'Agregar estrategias de motivación y manejo de sobrecarga',
+      description: 'Add motivation strategies and overload management',
       specificChanges: {
         motivationBoost: true,
         stressManagement: true,
@@ -191,14 +191,14 @@ export function analyzeFeedback(feedback: string, currentPlan: LifestylePlan): F
 function extractMentionedSkills(feedback: string): string[] {
   const skills = [];
   const skillKeywords = {
-    'liderazgo': 'Liderazgo',
-    'comunicación': 'Comunicación efectiva',
-    'programación': 'Programación',
-    'marketing': 'Marketing digital',
-    'análisis': 'Análisis de datos',
-    'gestión': 'Gestión de proyectos',
-    'ventas': 'Ventas',
-    'idiomas': 'Idiomas extranjeros'
+    'leadership': 'Leadership',
+    'communication': 'Effective Communication',
+    'programming': 'Programming',
+    'marketing': 'Digital Marketing',
+    'analysis': 'Data Analysis',
+    'management': 'Project Management',
+    'sales': 'Sales',
+    'languages': 'Foreign Languages'
   };
 
   Object.entries(skillKeywords).forEach(([keyword, skill]) => {
@@ -213,17 +213,17 @@ function extractMentionedSkills(feedback: string): string[] {
 function extractDislikedHobbies(feedback: string): string[] {
   const hobbies = [];
   const hobbyKeywords = {
-    'lectura': 'Lectura y escritura',
-    'música': 'Música (tocar instrumentos)',
-    'cocina': 'Cocina y gastronomía',
-    'fotografía': 'Fotografía',
-    'deporte': 'Deportes (fútbol, tenis, etc.)',
-    'programación': 'Programación por hobby'
+    'reading': 'Reading and writing',
+    'music': 'Music (playing instruments)',
+    'cooking': 'Cooking and gastronomy',
+    'photography': 'Photography',
+    'sports': 'Sports (soccer, tennis, etc.)',
+    'programming': 'Programming as hobby'
   };
 
   Object.entries(hobbyKeywords).forEach(([keyword, hobby]) => {
     if (feedback.toLowerCase().includes(keyword) && 
-        (feedback.toLowerCase().includes('no me gusta') || feedback.toLowerCase().includes('no interesa'))) {
+        (feedback.toLowerCase().includes('don\'t like') || feedback.toLowerCase().includes('not interested'))) {
       hobbies.push(hobby);
     }
   });
@@ -235,39 +235,39 @@ function extractDietaryInfo(feedback: string): any {
   const restrictions = [];
   const feedbackLower = feedback.toLowerCase();
   
-  if (feedbackLower.includes('vegetariano')) restrictions.push('vegetariano');
-  if (feedbackLower.includes('vegano')) restrictions.push('vegano');
-  if (feedbackLower.includes('alergia')) restrictions.push('alergias');
-  if (feedbackLower.includes('lactosa')) restrictions.push('sin lactosa');
-  if (feedbackLower.includes('gluten')) restrictions.push('sin gluten');
+  if (feedbackLower.includes('vegetarian')) restrictions.push('vegetarian');
+  if (feedbackLower.includes('vegan')) restrictions.push('vegan');
+  if (feedbackLower.includes('allergy')) restrictions.push('allergies');
+  if (feedbackLower.includes('lactose')) restrictions.push('lactose-free');
+  if (feedbackLower.includes('gluten')) restrictions.push('gluten-free');
   
   return restrictions;
 }
 
 function generateAdjustmentSummary(adjustments: PlanAdjustment[]): string {
   if (adjustments.length === 0) {
-    return 'Tu plan está bien equilibrado según tu feedback. No se necesitan ajustes mayores.';
+    return 'Your plan is well balanced according to your feedback. No major adjustments needed.';
   }
 
   const sections = [...new Set(adjustments.map(adj => adj.section))];
   const sectionNames = {
-    professional: 'profesional',
+    professional: 'professional',
     fitness: 'fitness',
     hobbies: 'hobbies',
-    nutrition: 'nutrición',
-    insights: 'estrategias personales'
+    nutrition: 'nutrition',
+    insights: 'personal strategies'
   };
 
-  return `Basándome en tu feedback, he ajustado tu plan en las siguientes áreas: ${
+  return `Based on your feedback, I have adjusted your plan in the following areas: ${
     sections.map(s => sectionNames[s]).join(', ')
-  }. Los cambios están diseñados para hacer el plan más realista y alineado con tus preferencias.`;
+  }. The changes are designed to make the plan more realistic and aligned with your preferences.`;
 }
 
 function calculateConfidence(feedback: string, adjustments: PlanAdjustment[]): number {
   let confidence = 0.5; // Base confidence
   
   // Increase confidence based on specific keywords
-  const specificKeywords = ['muy', 'demasiado', 'no me gusta', 'prefiero', 'cambiar', 'ajustar'];
+  const specificKeywords = ['very', 'too much', 'don\'t like', 'prefer', 'change', 'adjust'];
   const keywordCount = specificKeywords.reduce((count, keyword) => 
     count + (feedback.toLowerCase().includes(keyword) ? 1 : 0), 0
   );
@@ -336,7 +336,7 @@ function adjustProfessionalPlan(plan: LifestylePlan, adjustment: PlanAdjustment)
       name: skillName,
       currentLevel: 'beginner' as const,
       targetLevel: 'intermediate' as const,
-      estimatedTimeToLearn: '3-6 meses'
+      estimatedTimeToLearn: '3-6 months'
     }));
     
     newPlan.professional = {
@@ -379,8 +379,8 @@ function adjustFitnessPlan(plan: LifestylePlan, adjustment: PlanAdjustment): Lif
         exercises: [
           ...workout.exercises,
           {
-            name: 'Ejercicio alternativo: Caminata activa',
-            instructions: 'Opción más suave para días de baja energía',
+            name: 'Alternative Exercise: Active Walking',
+            instructions: 'Slightly easier option for low-energy days',
             duration: '15-20 min'
           }
         ]
@@ -396,7 +396,7 @@ function adjustHobbiesPlan(plan: LifestylePlan, adjustment: PlanAdjustment): Lif
   
   if (adjustment.specificChanges.replaceHobbies) {
     const hobbiesToReplace = adjustment.specificChanges.replaceHobbies;
-    const alternativeHobbies = ['Podcasts y audiolibros', 'Meditación', 'Jardinería', 'Voluntariado'];
+    const alternativeHobbies = ['Podcasts and audiobooks', 'Meditation', 'Gardening', 'Volunteering'];
     
     newPlan.hobbies = {
       ...newPlan.hobbies,
@@ -406,8 +406,8 @@ function adjustHobbiesPlan(plan: LifestylePlan, adjustment: PlanAdjustment): Lif
           return {
             ...hobby,
             name: alternative,
-            learningGoals: [`Explorar ${alternative.toLowerCase()}`, 'Encontrar mi ritmo personal', 'Integrar en rutina semanal'],
-            nextSteps: [`Investigar recursos para ${alternative.toLowerCase()}`, 'Comenzar con sesiones cortas', 'Evaluar progreso semanal']
+            learningGoals: [`Explore ${alternative.toLowerCase()}`, 'Finding my personal rhythm', 'Integrating into weekly routine'],
+            nextSteps: [`Research resources for ${alternative.toLowerCase()}`, 'Start with short sessions', 'Evaluate weekly progress']
           };
         }
         return { ...hobby };
@@ -455,7 +455,7 @@ function adjustNutritionPlan(plan: LifestylePlan, adjustment: PlanAdjustment): L
   if (adjustment.specificChanges.dietaryRestrictions) {
     newPlan.nutrition = {
       ...newPlan.nutrition,
-      dietType: `${newPlan.nutrition.dietType} (ajustado por restricciones)`
+      dietType: `${newPlan.nutrition.dietType} (adjusted for restrictions)`
     };
   }
 
@@ -469,10 +469,10 @@ function adjustInsightsPlan(plan: LifestylePlan, adjustment: PlanAdjustment): Li
     newPlan.personalizedInsights = {
       ...newPlan.personalizedInsights,
       timeOptimization: [
-        'Usa la técnica de time-blocking con bloques más pequeños de 15-30 minutos',
-        'Identifica y elimina actividades de bajo valor en tu día',
-        'Combina actividades: escucha podcasts educativos mientras haces ejercicio suave',
-        'Implementa "micro-hábitos" que requieren solo 2-5 minutos diarios'
+        'Use time-blocking technique with smaller blocks of 15-30 minutes',
+        'Identify and eliminate low-value activities in your day',
+        'Combine activities: listen to educational podcasts while doing light exercise',
+        'Implement "micro-habits" that require only 2-5 minutes daily'
       ]
     };
   }
@@ -482,9 +482,9 @@ function adjustInsightsPlan(plan: LifestylePlan, adjustment: PlanAdjustment): Li
       ...newPlan.personalizedInsights,
       personalityBasedTips: [
         ...newPlan.personalizedInsights.personalityBasedTips,
-        'Celebra pequeños logros diarios para mantener la motivación',
-        'Divide objetivos grandes en mini-metas de 1-2 semanas',
-        'Crea un ritual de "victoria" para cada hito completado'
+        'Celebrate small daily achievements to maintain motivation',
+        'Divide large goals into mini-targets of 1-2 weeks',
+        'Create a "victory" ritual for each completed milestone'
       ]
     };
   }
@@ -495,9 +495,9 @@ function adjustInsightsPlan(plan: LifestylePlan, adjustment: PlanAdjustment): Li
 function extendDeadline(deadline: string): string {
   // Simple deadline extension logic
   const timeMap: { [key: string]: string } = {
-    '1 mes': '6 semanas',
-    '3 meses': '4-5 meses',
-    '6 meses': '8-9 meses'
+    '1 month': '6 weeks',
+    '3 months': '4-5 months',
+    '6 months': '8-9 months'
   };
   
   return timeMap[deadline] || deadline;
@@ -506,10 +506,10 @@ function extendDeadline(deadline: string): string {
 function increaseTimeCommitment(currentCommitment: string): string {
   // Simple time increase logic
   const timeMap: { [key: string]: string } = {
-    '30-45 min/semana': '1-2 horas/semana',
-    '1-2 horas/semana': '2-3 horas/semana',
-    '2-4 horas/semana': '4-6 horas/semana',
-    '4+ horas/semana': '6+ horas/semana'
+    '30-45 min/week': '1-2 hours/week',
+    '1-2 hours/week': '2-3 hours/week',
+    '2-4 hours/week': '4-6 hours/week',
+    '4+ hours/week': '6+ hours/week'
   };
   
   return timeMap[currentCommitment] || currentCommitment;

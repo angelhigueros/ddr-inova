@@ -42,47 +42,47 @@ function generateDetailedInsights(userProfile: UserProfile) {
   const timeOptimization = [];
 
   // Generate strengths based on goals and skills
-  if (userProfile.goals.includes('Avanzar en mi carrera profesional')) {
-    strengths.push('Ambición profesional y orientación a objetivos');
-    if (userProfile.currentSkills.includes('Liderazgo')) {
-      strengths.push('Capacidades naturales de liderazgo identificadas');
+  if (userProfile.goals.includes('Advance in my professional career')) {
+    strengths.push('Ambition and goal-oriented mindset');
+    if (userProfile.currentSkills.includes('Leadership')) {
+      strengths.push('Identified natural leadership capabilities');
     }
   }
 
-  if (userProfile.goals.includes('Mejorar mi condición física')) {
-    strengths.push('Compromiso con el bienestar personal y la salud');
+  if (userProfile.goals.includes('Improve my physical condition')) {
+    strengths.push('Commitment to personal well-being and health');
     if (userProfile.preferences.exerciseType === 'yoga') {
-      strengths.push('Enfoque holístico hacia el bienestar físico y mental');
+      strengths.push('Holistic focus on physical and mental well-being');
     }
   }
 
-  if (userProfile.goals.includes('Desarrollar nuevas habilidades técnicas')) {
-    strengths.push('Mentalidad de crecimiento y aprendizaje continuo');
-    if (userProfile.currentSkills.includes('Programación')) {
-      strengths.push('Base técnica sólida para expandir conocimientos');
+  if (userProfile.goals.includes('Develop new technical skills')) {
+    strengths.push('Growth mindset and continuous learning');
+    if (userProfile.currentSkills.includes('Programming')) {
+      strengths.push('Solid technical base for expanding knowledge');
     }
   }
 
   // Generate improvement areas based on challenges
   userProfile.currentChallenges.forEach(challenge => {
     switch(challenge) {
-      case 'Falta de tiempo':
-        improvementAreas.push('Optimización y gestión efectiva del tiempo');
-        timeOptimization.push('Implementa la técnica Pomodoro: 25 min trabajo + 5 min descanso');
-        timeOptimization.push('Usa apps de time-blocking para planificar tu día en bloques específicos');
+      case 'Lack of time':
+        improvementAreas.push('Effective time management and optimization');
+        timeOptimization.push('Implement Pomodoro technique: 25 min work + 5 min break');
+        timeOptimization.push('Use time-blocking apps to plan your day in specific blocks');
         break;
-      case 'Procrastinación':
-        improvementAreas.push('Desarrollo de disciplina y consistencia');
-        personalityBasedTips.push('Divide tareas grandes en micro-tareas de 2-5 minutos para reducir la resistencia mental');
+      case 'Procrastination':
+        improvementAreas.push('Developing discipline and consistency');
+        personalityBasedTips.push('Divide large tasks into small 2-5 minute micro-tasks to reduce mental resistance');
         break;
-      case 'Falta de motivación':
-        improvementAreas.push('Construcción de sistemas de motivación intrínseca');
-        personalityBasedTips.push('Conecta cada actividad con tus valores fundamentales y objetivos a largo plazo');
+      case 'Lack of motivation':
+        improvementAreas.push('Building intrinsic motivation systems');
+        personalityBasedTips.push('Connect each activity with your fundamental values and long-term goals');
         break;
-      case 'Estrés y ansiedad':
-        improvementAreas.push('Gestión emocional y técnicas de relajación');
+      case 'Stress and anxiety':
+        improvementAreas.push('Emotional management and relaxation techniques');
         if (userProfile.preferences.exerciseType === 'yoga') {
-          personalityBasedTips.push('Aprovecha tu práctica de yoga para desarrollar técnicas de respiración diaria');
+          personalityBasedTips.push('Take advantage of your daily yoga practice to develop breathing techniques');
         }
         break;
     }
@@ -91,17 +91,17 @@ function generateDetailedInsights(userProfile: UserProfile) {
   // Generate tips based on motivation factors
   userProfile.motivationFactors.forEach(factor => {
     switch(factor) {
-      case 'Reconocimiento y logros':
-        personalityBasedTips.push('Documenta y celebra tus pequeños wins diarios. Crea un "journal de logros" semanal');
+      case 'Recognition and achievements':
+        personalityBasedTips.push('Document and celebrate your small wins daily. Create a "wins journal" weekly');
         break;
-      case 'Crecimiento personal':
-        personalityBasedTips.push('Dedica 15 minutos cada domingo a reflexionar sobre tu crecimiento de la semana');
+      case 'Personal growth':
+        personalityBasedTips.push('Dedicate 15 minutes every Sunday to reflect on your weekly growth');
         break;
-      case 'Aprendizaje continuo':
-        personalityBasedTips.push('Implementa la regla del "1% diario": aprende algo pequeño pero consistente cada día');
+      case 'Continuous learning':
+        personalityBasedTips.push('Implement the "1% daily rule": learn something small but consistently every day');
         break;
-      case 'Autonomía e independencia':
-        personalityBasedTips.push('Diseña rutinas que te den control total sobre tu agenda y decisiones diarias');
+      case 'Autonomy and independence':
+        personalityBasedTips.push('Design routines that give you complete control over your daily agenda and decisions');
         break;
     }
   });
@@ -110,50 +110,50 @@ function generateDetailedInsights(userProfile: UserProfile) {
   let preferredLearningStyle = '';
   switch(userProfile.preferences.learningStyle) {
     case 'visual':
-      preferredLearningStyle = 'Aprendizaje visual e interactivo con diagramas y contenido multimedia';
-      personalityBasedTips.push('Usa mapas mentales y diagramas de flujo para organizar nueva información');
+      preferredLearningStyle = 'Visual and interactive learning with diagrams and multimedia content';
+      personalityBasedTips.push('Use mind maps and flowcharts to organize new information');
       break;
-    case 'auditivo':
-      preferredLearningStyle = 'Aprendizaje auditivo con podcasts y explicaciones verbales';
-      personalityBasedTips.push('Convierte tu tiempo de commute en sesiones de aprendizaje con podcasts educativos');
+    case 'auditory':
+      preferredLearningStyle = 'Auditory learning with podcasts and verbal explanations';
+      personalityBasedTips.push('Convert your commute time into learning sessions with educational podcasts');
       break;
-    case 'kinestesico':
-      preferredLearningStyle = 'Aprendizaje kinestésico con práctica y experimentación directa';
-      personalityBasedTips.push('Practica inmediatamente lo que aprendes - la experimentación es tu fortaleza');
+    case 'kinesthetic':
+      preferredLearningStyle = 'Kinesthetic learning with practice and direct experimentation';
+      personalityBasedTips.push('Practice immediately what you learn - experimentation is your strength');
       break;
-    case 'lectura':
-      preferredLearningStyle = 'Aprendizaje mediante lectura y escritura estructurada';
-      personalityBasedTips.push('Toma notas detalladas y crea resúmenes escritos de lo que aprendes');
+    case 'reading':
+      preferredLearningStyle = 'Learning through reading and structured writing';
+      personalityBasedTips.push('Take detailed notes and create written summaries of what you learn');
       break;
     default:
-      preferredLearningStyle = 'Aprendizaje mixto adaptable según el contexto';
+      preferredLearningStyle = 'Adaptable mixed learning style based on context';
   }
 
   // Motivation style based on factors
   let motivationStyle = '';
-  if (userProfile.motivationFactors.includes('Desafíos intelectuales')) {
-    motivationStyle = 'Exploración y experimentación con enfoques desafiantes';
-  } else if (userProfile.motivationFactors.includes('Colaboración con otros')) {
-    motivationStyle = 'Motivación social y trabajo en equipo';
-  } else if (userProfile.motivationFactors.includes('Resultados tangibles')) {
-    motivationStyle = 'Orientación a resultados medibles y logros concretos';
+  if (userProfile.motivationFactors.includes('Intellectual challenges')) {
+    motivationStyle = 'Exploration and experimentation with challenging approaches';
+  } else if (userProfile.motivationFactors.includes('Collaboration with others')) {
+    motivationStyle = 'Social motivation and teamwork';
+  } else if (userProfile.motivationFactors.includes('Tangible results')) {
+    motivationStyle = 'Results-oriented motivation with measurable outcomes';
   } else {
-    motivationStyle = 'Motivación intrínseca centrada en crecimiento personal';
+    motivationStyle = 'Intrinsic motivation centered on personal growth';
   }
 
   // Time optimization based on available time and schedule
-  if (userProfile.timeAvailable === '1-3 horas') {
-    timeOptimization.push('Microaprendizaje: sesiones de 15-20 minutos máximo');
-    timeOptimization.push('Aprovecha momentos muertos: transporte, esperas, etc.');
-  } else if (userProfile.timeAvailable === '15+ horas') {
-    timeOptimization.push('Sesiones de deep work de 2-3 horas para proyectos complejos');
-    timeOptimization.push('Alterna entre diferentes tipos de actividades para mantener el engagement');
+  if (userProfile.timeAvailable === '1-3 hours') {
+    timeOptimization.push('Microlearning: maximum 15-20 minutes');
+    timeOptimization.push('Take advantage of dead moments: transport, waits, etc.');
+  } else if (userProfile.timeAvailable === '15+ hours') {
+    timeOptimization.push('Deep work sessions of 2-3 hours for complex projects');
+    timeOptimization.push('Alternate between different types of activities to maintain engagement');
   }
 
-  if (userProfile.preferences.preferredSchedule === 'mañana') {
-    timeOptimization.push('Aprovecha las mañanas para tareas que requieren máxima concentración');
-  } else if (userProfile.preferences.preferredSchedule === 'noche') {
-    timeOptimization.push('Diseña rutinas nocturnas productivas que respeten tu ritmo natural');
+  if (userProfile.preferences.preferredSchedule === 'morning') {
+    timeOptimization.push('Take advantage of mornings for tasks requiring maximum concentration');
+  } else if (userProfile.preferences.preferredSchedule === 'night') {
+    timeOptimization.push('Design productive nocturnal routines that respect your natural rhythm');
   }
 
   return {
@@ -168,63 +168,45 @@ function generateDetailedInsights(userProfile: UserProfile) {
 
 function generateProfessionalPlan(userProfile: UserProfile) {
   const careerGoals = userProfile.goals.filter(goal => 
-    goal.includes('carrera') || goal.includes('profesional') || goal.includes('liderazgo') || goal.includes('ingresos')
+    goal.includes('Advance in my professional career') || 
+    goal.includes('Increase my income') || 
+    goal.includes('Develop leadership skills') || 
+    goal.includes('Acquire professional certifications')
   );
 
   // Generate career path based on profession and goals
-  let currentRole = userProfile.profession;
-  let targetRole = '';
-  let estimatedTimeframe = '';
-  let salaryGrowthPotential = '';
+  const currentRole = userProfile.profession || 'Current Position';
+  const targetRole = generateTargetRole(userProfile.profession, careerGoals);
+  const estimatedTimeframe = userProfile.timeAvailable === '15+ hours' ? '6-12 months' : '12-18 months';
+  const salaryGrowthPotential = calculateSalaryGrowth(userProfile.profession);
 
-  if (userProfile.profession.toLowerCase().includes('programador') || userProfile.profession.toLowerCase().includes('desarrollador')) {
-    if (careerGoals.some(goal => goal.includes('liderazgo'))) {
-      targetRole = 'Senior Developer / Tech Lead';
-      estimatedTimeframe = '2-3 años';
-      salaryGrowthPotential = '+40-60%';
-    } else {
-      targetRole = 'Senior Developer / Architect';
-      estimatedTimeframe = '1-2 años';
-      salaryGrowthPotential = '+30-50%';
-    }
-  } else if (userProfile.profession.toLowerCase().includes('diseñador')) {
-    targetRole = 'Senior Designer / Design Lead';
-    estimatedTimeframe = '2-3 años';
-    salaryGrowthPotential = '+35-55%';
-  } else {
-    targetRole = 'Senior ' + userProfile.profession;
-    estimatedTimeframe = '2-4 años';
-    salaryGrowthPotential = '+25-45%';
-  }
-
-  // Generate goals based on user input and skills
-  const goals = [];
+  const goals: Goal[] = [];
   
   if (careerGoals.length > 0) {
     careerGoals.forEach((goal, index) => {
       goals.push({
         id: `prof-${index + 1}`,
         title: goal,
-        description: `Plan específico para: ${goal.toLowerCase()}`,
+        description: `Specific plan for: ${goal.toLowerCase()}`,
         priority: index === 0 ? 'high' : index === 1 ? 'medium' : 'low' as 'high' | 'medium' | 'low',
         progress: 0,
         milestones: [
           {
             id: `milestone-${index + 1}-1`,
-            title: 'Evaluación inicial y planificación',
-            deadline: '1 mes',
+            title: 'Initial assessment and planning',
+            deadline: '1 month',
             completed: false
           },
           {
             id: `milestone-${index + 1}-2`,
-            title: 'Desarrollo de habilidades clave',
-            deadline: '3 meses',
+            title: 'Key skills development',
+            deadline: '3 months',
             completed: false
           },
           {
             id: `milestone-${index + 1}-3`,
-            title: 'Implementación y resultados',
-            deadline: '6 meses',
+            title: 'Implementation and results',
+            deadline: '6 months',
             completed: false
           }
         ]
@@ -233,14 +215,14 @@ function generateProfessionalPlan(userProfile: UserProfile) {
   }
 
   // Generate skills to acquire based on missing skills and goals
-  const allProfessionalSkills = ['Liderazgo', 'Comunicación efectiva', 'Gestión de proyectos', 'Análisis de datos', 'Presentaciones públicas'];
+  const allProfessionalSkills = ['Leadership', 'Effective Communication', 'Project Management', 'Data Analysis', 'Public Speaking'];
   const skillsToAcquire = allProfessionalSkills
     .filter(skill => !userProfile.currentSkills.includes(skill))
     .slice(0, 4)
     .map(skill => ({
       name: skill,
-      currentLevel: 'Principiante',
-      targetLevel: 'Intermedio-Avanzado',
+      currentLevel: 'Beginner',
+      targetLevel: 'Intermediate-Advanced',
       estimatedTimeToLearn: getSkillLearningTime(skill, userProfile.timeAvailable)
     }));
 
@@ -262,7 +244,7 @@ function generateProfessionalPlan(userProfile: UserProfile) {
 
 function generateFitnessPlan(userProfile: UserProfile) {
   const fitnessGoals = userProfile.goals.filter(goal => 
-    goal.includes('física') || goal.includes('salud')
+    goal.includes('physical') || goal.includes('health')
   );
 
   // Generate workout routine based on exercise preference and available time
@@ -271,35 +253,35 @@ function generateFitnessPlan(userProfile: UserProfile) {
   
   if (exerciseType === 'cardio') {
     workoutRoutine.push({
-      name: 'Cardio Intensivo',
-      duration: userProfile.timeAvailable === '1-3 horas' ? 20 : 30,
+      name: 'Intense Cardio',
+      duration: userProfile.timeAvailable === '1-3 hours' ? 20 : 30,
       difficulty: 'intermediate' as const,
       exercises: [
-        { name: 'Correr/Trotar', instructions: 'Mantén un ritmo constante', duration: '15-20 min' },
-        { name: 'Jumping Jacks', instructions: 'Series explosivas', sets: 3, reps: 30 },
-        { name: 'Burpees', instructions: 'Movimiento completo', sets: 3, reps: 10 }
+        { name: 'Run/Trot', instructions: 'Maintain a constant pace', duration: '15-20 min' },
+        { name: 'Jumping Jacks', instructions: 'Explosive series', sets: 3, reps: 30 },
+        { name: 'Burpees', instructions: 'Full movement', sets: 3, reps: 10 }
       ]
     });
-  } else if (exerciseType === 'fuerza') {
+  } else if (exerciseType === 'strength') {
     workoutRoutine.push({
-      name: 'Entrenamiento de Fuerza',
-      duration: userProfile.timeAvailable === '1-3 horas' ? 30 : 45,
+      name: 'Strength Training',
+      duration: userProfile.timeAvailable === '1-3 hours' ? 30 : 45,
       difficulty: 'intermediate' as const,
       exercises: [
-        { name: 'Flexiones', instructions: 'Forma perfecta, control en bajada', sets: 3, reps: 15 },
-        { name: 'Sentadillas', instructions: 'Baja hasta 90 grados', sets: 3, reps: 20 },
-        { name: 'Plancha', instructions: 'Mantén el core activado', duration: '30-60 seg', sets: 3 }
+        { name: 'Push-ups', instructions: 'Perfect form, control in descent', sets: 3, reps: 15 },
+        { name: 'Squats', instructions: 'Lower to 90 degrees', sets: 3, reps: 20 },
+        { name: 'Plank', instructions: 'Keep core activated', duration: '30-60 sec', sets: 3 }
       ]
     });
   } else if (exerciseType === 'yoga') {
     workoutRoutine.push({
-      name: 'Sesión de Yoga',
-      duration: userProfile.timeAvailable === '1-3 horas' ? 25 : 45,
+      name: 'Yoga Session',
+      duration: userProfile.timeAvailable === '1-3 hours' ? 25 : 45,
       difficulty: 'beginner' as const,
       exercises: [
-        { name: 'Saludo al Sol', instructions: 'Secuencia completa, respiración consciente', duration: '10 min' },
-        { name: 'Posturas de pie', instructions: 'Guerrero I, II, triángulo', duration: '15 min' },
-        { name: 'Relajación final', instructions: 'Savasana con meditación', duration: '10 min' }
+        { name: 'Sun Salutation', instructions: 'Complete sequence, conscious breathing', duration: '10 min' },
+        { name: 'Standing Poses', instructions: 'Warrior I, II, triangle', duration: '15 min' },
+        { name: 'Final Relaxation', instructions: 'Savasana with meditation', duration: '10 min' }
       ]
     });
   }
@@ -307,14 +289,14 @@ function generateFitnessPlan(userProfile: UserProfile) {
   // Generate progress tracking metrics
   const progressTracking = [
     {
-      name: 'Peso corporal',
+      name: 'Body Weight',
       currentValue: 70,
-      targetValue: userProfile.goals.includes('Mejorar mi condición física') ? 65 : 70,
+      targetValue: userProfile.goals.includes('Improve my physical condition') ? 65 : 70,
       unit: 'kg',
       trackingFrequency: 'weekly' as const
     },
     {
-      name: 'Resistencia cardiovascular',
+      name: 'Cardiovascular Resistance',
       currentValue: 20,
       targetValue: 35,
       unit: 'min',
@@ -333,9 +315,9 @@ function generateHobbiesPlan(userProfile: UserProfile) {
     let skillLevel: 'beginner' | 'intermediate' | 'advanced' = 'beginner';
     
     // Determine skill level based on experience
-    if (userProfile.experience === 'avanzado') {
+    if (userProfile.experience === 'advanced') {
       skillLevel = 'intermediate';
-    } else if (userProfile.experience === 'intermedio') {
+    } else if (userProfile.experience === 'intermediate') {
       skillLevel = 'beginner';
     }
 
@@ -360,8 +342,8 @@ function generateHobbiesPlan(userProfile: UserProfile) {
 
   // Generate learning resources
   const resources = userProfile.preferences.hobbies.slice(0, 4).map(hobby => ({
-    title: `Curso de ${hobby}`,
-    description: `Aprende ${hobby.toLowerCase()} desde cero con expertos`,
+    title: `${hobby} Course`,
+    description: `Learn ${hobby.toLowerCase()} from scratch with experts`,
     cost: userProfile.preferences.budget === '0-50' ? 'free' as const : 'paid' as const,
     rating: 4.5,
     url: `https://example.com/${hobby.toLowerCase().replace(' ', '-')}`
@@ -387,10 +369,10 @@ function generateNutritionPlan(userProfile: UserProfile) {
   const hydrationPlan = {
     dailyWaterGoal: 2.5,
     reminders: [
-      'Al despertar - 1 vaso',
-      'Antes de cada comida - 1 vaso',
-      'Media tarde - 1 vaso',
-      'Antes de dormir - 1 vaso'
+      'At wake-up - 1 glass',
+      'Before each meal - 1 glass',
+      'Mid-afternoon - 1 glass',
+      'Before bed - 1 glass'
     ]
   };
 
@@ -410,24 +392,24 @@ function generateAchievements(userProfile: UserProfile) {
   const achievements = [
     {
       id: 'first-plan',
-      title: 'Primer Plan Creado',
-      description: '¡Has creado tu primer plan de estilo de vida personalizado!',
+      title: 'First Plan Created',
+      description: 'You have created your first personalized lifestyle plan!',
       icon: '🎯',
       unlocked: true,
       unlockedDate: new Date().toLocaleDateString()
     },
     {
       id: 'goal-setter',
-      title: 'Establecedor de Metas',
-      description: `Has definido ${userProfile.goals.length} objetivos claros para tu crecimiento`,
+      title: 'Goal Setter',
+      description: `You have defined ${userProfile.goals.length} clear goals for your growth`,
       icon: '🎪',
       unlocked: userProfile.goals.length >= 3,
       unlockedDate: userProfile.goals.length >= 3 ? new Date().toLocaleDateString() : undefined
     },
     {
       id: 'self-aware',
-      title: 'Autoconocimiento',
-      description: 'Has identificado tus fortalezas y áreas de mejora',
+      title: 'Self-awareness',
+      description: 'You have identified your strengths and areas for improvement',
       icon: '🧠',
       unlocked: userProfile.currentChallenges.length > 0,
       unlockedDate: userProfile.currentChallenges.length > 0 ? new Date().toLocaleDateString() : undefined
@@ -439,11 +421,11 @@ function generateAchievements(userProfile: UserProfile) {
 
 // Helper functions
 function getSkillLearningTime(skill: string, timeAvailable: string): string {
-  const baseTime = skill === 'Liderazgo' ? '6-12 meses' : 
-                   skill === 'Análisis de datos' ? '3-6 meses' : '2-4 meses';
+  const baseTime = skill === 'Leadership' ? '6-12 months' : 
+                   skill === 'Data Analysis' ? '3-6 months' : '2-4 months';
   
-  if (timeAvailable === '1-3 horas') return baseTime;
-  if (timeAvailable === '15+ horas') return baseTime.split('-')[0] + ' meses';
+  if (timeAvailable === '1-3 hours') return baseTime;
+  if (timeAvailable === '15+ hours') return baseTime.split('-')[0] + ' months';
   return baseTime;
 }
 
@@ -453,22 +435,22 @@ function generateProfessionalResources(userProfile: UserProfile) {
   
   const resources = [];
   
-  if (learningStyle === 'visual' || learningStyle === 'mixto') {
+  if (learningStyle === 'visual' || learningStyle === 'mixed') {
     resources.push({
       title: 'Coursera Professional Courses',
-      description: 'Cursos con certificación profesional en tu área',
+      description: 'Certified professional courses in your field',
       cost: budget === '0-50' ? 'free' : 'subscription' as const,
-      estimatedTime: '4-6 semanas',
+      estimatedTime: '4-6 weeks',
       url: 'https://coursera.org'
     });
   }
   
-  if (learningStyle === 'auditivo' || learningStyle === 'mixto') {
+  if (learningStyle === 'auditory' || learningStyle === 'mixed') {
     resources.push({
       title: 'LinkedIn Learning Podcasts',
-      description: 'Podcasts profesionales y audiobooks especializados',
+      description: 'Professional podcasts and audiobooks',
       cost: 'subscription' as const,
-      estimatedTime: '30 min/día',
+      estimatedTime: '30 min/day',
       url: 'https://linkedin.com/learning'
     });
   }
@@ -477,34 +459,34 @@ function generateProfessionalResources(userProfile: UserProfile) {
 }
 
 function calculateHobbyTime(timeAvailable: string): string {
-  if (timeAvailable === '1-3 horas') return '30-45 min/semana';
-  if (timeAvailable === '4-7 horas') return '1-2 horas/semana';
-  if (timeAvailable === '8-15 horas') return '2-4 horas/semana';
-  return '4+ horas/semana';
+  if (timeAvailable === '1-3 hours') return '30-45 min/week';
+  if (timeAvailable === '4-7 hours') return '1-2 hours/week';
+  if (timeAvailable === '8-15 hours') return '2-4 hours/week';
+  return '4+ hours/week';
 }
 
 function generateHobbyGoals(hobby: string): string[] {
   const goalMap: { [key: string]: string[] } = {
-    'Lectura y escritura': ['Leer 2 libros por mes', 'Escribir artículos semanales', 'Participar en club de lectura'],
-    'Música (tocar instrumentos)': ['Aprender 5 canciones básicas', 'Practicar 30 min diarios', 'Grabar primera composición'],
-    'Cocina y gastronomía': ['Dominar 10 recetas base', 'Experimentar con nuevas técnicas', 'Organizar cena para amigos'],
-    'Fotografía': ['Entender conceptos básicos', 'Completar 30 fotos por semana', 'Crear primer portfolio'],
-    'Programación por hobby': ['Completar primer proyecto personal', 'Aprender nuevo framework', 'Contribuir a open source']
+    'Reading and writing': ['Read 2 books per month', 'Write weekly articles', 'Participate in reading club'],
+    'Music (playing instruments)': ['Learn 5 basic songs', 'Practice 30 min daily', 'Record first composition'],
+    'Cooking and gastronomy': ['Master 10 base recipes', 'Experiment with new techniques', 'Host dinner for friends'],
+    'Photography': ['Understand basic concepts', 'Complete 30 photos per week', 'Create first portfolio'],
+    'Programming as hobby': ['Complete first personal project', 'Learn new framework', 'Contribute to open source']
   };
   
-  return goalMap[hobby] || ['Aprender fundamentos', 'Practicar regularmente', 'Crear primer proyecto'];
+  return goalMap[hobby] || ['Learn fundamentals', 'Practice regularly', 'Create first project'];
 }
 
 function generateHobbyNextSteps(hobby: string, skillLevel: string): string[] {
   const steps = [
-    `Investigar recursos de aprendizaje para ${hobby.toLowerCase()}`,
-    'Establecer rutina de práctica semanal',
-    'Conectar con comunidad de practicantes',
-    'Definir primer proyecto práctico'
+    `Research learning resources for ${hobby.toLowerCase()}`,
+    'Establish weekly practice routine',
+    'Connect with practitioner community',
+    'Define first practical project'
   ];
   
   if (skillLevel === 'intermediate') {
-    steps.push('Explorar técnicas avanzadas', 'Considerar enseñar a principiantes');
+    steps.push('Explore advanced techniques', 'Consider teaching beginners');
   }
   
   return steps;
@@ -512,27 +494,27 @@ function generateHobbyNextSteps(hobby: string, skillLevel: string): string[] {
 
 function generateProjectName(hobby: string): string {
   const nameMap: { [key: string]: string } = {
-    'Lectura y escritura': 'Blog Personal de Reseñas',
-    'Música (tocar instrumentos)': 'Primera Grabación Musical',
-    'Cocina y gastronomía': 'Recetario Personal',
-    'Fotografía': 'Serie Fotográfica Temática',
-    'Programación por hobby': 'Aplicación Web Personal'
+    'Reading and writing': 'Personal Review Blog',
+    'Music (playing instruments)': 'First Musical Recording',
+    'Cooking and gastronomy': 'Personal Recipe Book',
+    'Photography': 'Themed Photo Series',
+    'Programming as hobby': 'Personal Web Application'
   };
   
-  return nameMap[hobby] || `Proyecto de ${hobby}`;
+  return nameMap[hobby] || `${hobby} Project`;
 }
 
 function generateProjectDescription(hobby: string): string {
-  return `Un proyecto práctico para aplicar y mostrar tus habilidades en ${hobby.toLowerCase()}`;
+  return `A practical project to apply and showcase your skills in ${hobby.toLowerCase()}`;
 }
 
 function generateProjectSteps(hobby: string): string[] {
   return [
-    'Planificación y diseño inicial',
-    'Investigación y recopilación de recursos',
-    'Desarrollo/Creación principal',
-    'Revisión y refinamiento',
-    'Presentación y compartir resultados'
+    'Initial planning and design',
+    'Research and resource gathering',
+    'Main development/creation',
+    'Review and refinement',
+    'Presentation and sharing results'
   ];
 }
 
@@ -541,11 +523,11 @@ function generateWeeklyMealPlan(dietType: string) {
   // For brevity, returning a simplified structure
   return [
     {
-      day: 'Lunes',
-      breakfast: { name: 'Avena con frutas', calories: 300, prepTime: 10 },
-      lunch: { name: 'Ensalada mediterránea', calories: 450, prepTime: 15 },
-      dinner: { name: 'Salmón con vegetales', calories: 500, prepTime: 25 },
-      snacks: [{ name: 'Frutos secos', calories: 150 }],
+      day: 'Monday',
+      breakfast: { name: 'Oatmeal with fruits', calories: 300, prepTime: 10 },
+      lunch: { name: 'Mediterranean salad', calories: 450, prepTime: 15 },
+      dinner: { name: 'Salmon with vegetables', calories: 500, prepTime: 25 },
+      snacks: [{ name: 'Dried fruits', calories: 150 }],
       totalCalories: 1400,
       macros: { protein: 85, carbs: 120, fats: 65, fiber: 25 }
     }
@@ -555,40 +537,40 @@ function generateWeeklyMealPlan(dietType: string) {
 
 function generateShoppingList(dietType: string) {
   const lists: { [key: string]: any } = {
-    'balanceada': {
-      proteins: ['Pollo', 'Pescado', 'Huevos', 'Legumbres'],
-      vegetables: ['Brócoli', 'Espinacas', 'Tomates', 'Zanahorias'],
-      fruits: ['Manzanas', 'Plátanos', 'Berries', 'Naranjas'],
+    'balanced': {
+      proteins: ['Chicken', 'Fish', 'Eggs', 'Legumes'],
+      vegetables: ['Broccoli', 'Spinach', 'Tomatoes', 'Carrots'],
+      fruits: ['Apples', 'Bananas', 'Berries', 'Oranges'],
       estimatedCost: '$80-120 USD'
     },
-    'vegetariana': {
-      proteins: ['Tofu', 'Tempeh', 'Legumbres', 'Quinoa'],
-      vegetables: ['Kale', 'Espinacas', 'Calabacín', 'Pimientos'],
-      fruits: ['Aguacate', 'Berries', 'Cítricos', 'Mango'],
+    'vegetarian': {
+      proteins: ['Tofu', 'Tempeh', 'Legumes', 'Quinoa'],
+      vegetables: ['Kale', 'Spinach', 'Zucchini', 'Peppers'],
+      fruits: ['Avocado', 'Berries', 'Citrus', 'Mango'],
       estimatedCost: '$60-90 USD'
     }
   };
   
-  return lists[dietType] || lists['balanceada'];
+  return lists[dietType] || lists['balanced'];
 }
 
 function generateSupplements(dietType: string, goals: string[]) {
   const supplements = [
     {
-      name: 'Multivitamínico',
-      purpose: 'Asegurar ingesta adecuada de vitaminas y minerales',
-      dosage: '1 cápsula diaria',
-      timing: 'Con el desayuno',
+      name: 'Multivitamin',
+      purpose: 'Ensure adequate vitamin and mineral intake',
+      dosage: '1 capsule daily',
+      timing: 'With breakfast',
       optional: false
     }
   ];
   
-  if (goals.includes('Mejorar mi condición física')) {
+  if (goals.includes('Improve my physical condition')) {
     supplements.push({
-      name: 'Proteína en polvo',
-      purpose: 'Apoyar desarrollo y recuperación muscular',
+      name: 'Protein Powder',
+      purpose: 'Support muscle development and recovery',
       dosage: '1 scoop (25g)',
-      timing: 'Post-entrenamiento',
+      timing: 'Post-workout',
       optional: true
     });
   }

@@ -26,6 +26,24 @@ export {
   clearAllPlans,
 } from './plansSlice';
 
+// Export actions from trackingSlice
+export {
+  hydrateTracking,
+  startCheckIn,
+  updateCheckIn,
+  saveCheckIn,
+  cancelCheckIn,
+  addStreak,
+  updateStreak,
+  unlockAchievement,
+  setTheme,
+  toggleTheme,
+  updatePreferences,
+  setDashboard,
+  setDashboardLoading,
+  setSelectedPeriod
+} from './trackingSlice';
+
 // Export selectors
 export {
   selectPlans,
@@ -42,4 +60,27 @@ export {
   selectRecentPlans,
   selectAllTags,
   selectPlanStats,
+} from './selectors';
+
+// Export tracking selectors
+export {
+  selectTrackingState,
+  selectDailyCheckIns,
+  selectCurrentCheckIn,
+  selectIsCheckingIn,
+  selectWeeklyProgress,
+  selectMonthlyProgress,
+  selectDashboard,
+  selectDashboardLoading,
+  selectStreaks,
+  selectAchievements,
+  selectUserPreferences,
+  selectCurrentTheme,
+  selectSelectedPeriod,
+  selectTrackingIsHydrated,
+  selectCurrentStreak,
+  selectTodayCheckIn,
+  selectRecentCheckIns,
+  selectWeekProgress,
+  selectMonthProgress
 } from './selectors'; 

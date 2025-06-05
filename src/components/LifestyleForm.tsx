@@ -29,92 +29,90 @@ interface Props {
 }
 
 const goalOptions = [
-  'Avanzar en mi carrera profesional',
-  'Mejorar mi condición física',
-  'Desarrollar nuevas habilidades técnicas',
-  'Aprender un nuevo idioma',
-  'Mejorar mi equilibrio trabajo-vida',
-  'Aumentar mis ingresos',
-  'Desarrollar habilidades de liderazgo',
-  'Mejorar mi salud mental',
-  'Crear un negocio propio',
-  'Aprender habilidades creativas',
-  'Mejorar mis relaciones sociales',
-  'Desarrollar disciplina y hábitos',
-  'Adquirir certificaciones profesionales',
-  'Mejorar mi productividad',
-  'Encontrar mi propósito de vida'
+  'Advance in my professional career',
+  'Improve my physical condition',
+  'Develop new technical skills',
+  'Learn a new language',
+  'Improve my work-life balance',
+  'Increase my income',
+  'Develop leadership skills',
+  'Improve my mental health',
+  'Start my own business',
+  'Learn creative skills',
+  'Improve my social relationships',
+  'Develop discipline and habits',
+  'Acquire professional certifications',
+  'Improve my productivity',
+  'Find my life purpose'
 ];
 
 const hobbyOptions = [
-  'Lectura y escritura',
-  'Música (tocar instrumentos)',
-  'Cocina y gastronomía',
-  'Fotografía',
-  'Pintura y dibujo',
-  'Deportes (fútbol, tenis, etc.)',
-  'Jardinería',
-  'Videojuegos',
-  'Programación por hobby',
-  'Viajes y exploración',
-  'Yoga y meditación',
-  'Baile',
-  'Manualidades y DIY',
-  'Podcasts y audiolibros',
-  'Cine y series',
-  'Coleccionismo',
-  'Voluntariado',
-  'Idiomas extranjeros',
-  'Ajedrez y juegos de mesa',
-  'Astronomía'
+  'Reading and writing',
+  'Music (playing instruments)',
+  'Cooking and gastronomy',
+  'Photography',
+  'Painting and drawing',
+  'Sports (soccer, tennis, etc.)',
+  'Gardening',
+  'Video games',
+  'Programming as hobby',
+  'Travel and exploration',
+  'Yoga and meditation',
+  'Dancing',
+  'Crafts and DIY',
+  'Podcasts and audiobooks',
+  'Movies and series',
+  'Collecting',
+  'Volunteering',
+  'Foreign languages',
+  'Chess and board games',
+  'Astronomy'
 ];
 
 const currentSkillsOptions = [
-  'Comunicación efectiva',
-  'Liderazgo',
-  'Programación',
-  'Diseño gráfico',
-  'Marketing digital',
-  'Análisis de datos',
-  'Gestión de proyectos',
-  'Ventas',
-  'Idiomas extranjeros',
-  'Presentaciones públicas',
-  'Escritura técnica',
-  'Negociación',
-  'Trabajo en equipo',
-  'Resolución de problemas',
-  'Creatividad e innovación'
+  'Effective communication',
+  'Leadership',
+  'Programming',
+  'Graphic design',
+  'Digital marketing',
+  'Data analysis',
+  'Project management',
+  'Sales',
+  'Foreign languages',
+  'Public speaking',
+  'Technical writing',
+  'Negotiation',
+  'Teamwork',
+  'Problem solving',
+  'Creativity and innovation'
 ];
 
 const motivationFactorsOptions = [
-  'Reconocimiento y logros',
-  'Crecimiento personal',
-  'Estabilidad financiera',
-  'Flexibilidad de horarios',
-  'Impacto social positivo',
-  'Desafíos intelectuales',
-  'Colaboración con otros',
-  'Autonomía e independencia',
-  'Aprendizaje continuo',
-  'Competencia sana',
-  'Creatividad y expresión',
-  'Resultados tangibles'
+  'Recognition and achievements',
+  'Personal growth',
+  'Financial stability',
+  'Schedule flexibility',
+  'Positive social impact',
+  'Intellectual challenges',
+  'Collaboration with others',
+  'Autonomy and independence',
+  'Continuous learning',
+  'Healthy competition',
+  'Creativity and expression',
+  'Tangible results'
 ];
 
 const currentChallengesOptions = [
-  'Falta de tiempo',
-  'Procrastinación',
-  'Falta de motivación',
-  'Dificultad para concentrarse',
-  'Estrés y ansiedad',
-  'Falta de recursos económicos',
-  'Miedo al fracaso',
-  'Falta de disciplina',
-  'Sobrecarga de trabajo',
-  'Falta de dirección clara',
-  'Perfeccionismo',
-  'Dificultad para establecer prioridades'
+  'Lack of time',
+  'Procrastination',
+  'Lack of motivation',
+  'Stress and anxiety',
+  'Lack of financial resources',
+  'Work overload',
+  'Lack of discipline',
+  'Social distractions',
+  'Lack of clear direction',
+  'Lack of emotional support'
 ];
 
 export default function LifestyleForm({ onSubmit, validationSchema, initialValues }: Props) {
@@ -142,10 +140,10 @@ export default function LifestyleForm({ onSubmit, validationSchema, initialValue
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
       <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-8 text-center">
         <h1 className="text-4xl font-bold text-white mb-4">
-          Crea tu Plan de Estilo de Vida Personalizado
+          Create Your Personalized Lifestyle Plan
         </h1>
         <p className="text-xl text-purple-100">
-          Completa el formulario para generar tu plan personalizado
+          Complete the form to generate your personalized plan
         </p>
       </div>
 
@@ -164,18 +162,18 @@ export default function LifestyleForm({ onSubmit, validationSchema, initialValue
                     <div className="bg-purple-100 p-2 rounded-lg">
                       <span className="text-purple-600 text-lg">👤</span>
                     </div>
-                    Información Personal
+                    Personal Information
                   </h2>
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Nombre Completo
+                      Full Name
                     </label>
                     <Field
                       name="name"
                       type="text"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                      placeholder="Tu nombre completo"
+                      placeholder="Your full name"
                     />
                     {errors.name && touched.name && (
                       <div className="text-red-500 text-sm mt-1">{errors.name}</div>
@@ -184,19 +182,19 @@ export default function LifestyleForm({ onSubmit, validationSchema, initialValue
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Edad
+                      Age
                     </label>
                     <Field
                       name="age"
                       as="select"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 cursor-pointer"
                     >
-                      <option value="">Selecciona tu edad</option>
-                      <option value="18-25">18-25 años</option>
-                      <option value="26-35">26-35 años</option>
-                      <option value="36-45">36-45 años</option>
-                      <option value="46-55">46-55 años</option>
-                      <option value="56+">56+ años</option>
+                      <option value="">Select your age</option>
+                      <option value="18-25">18-25 years</option>
+                      <option value="26-35">26-35 years</option>
+                      <option value="36-45">36-45 years</option>
+                      <option value="46-55">46-55 years</option>
+                      <option value="56+">56+ years</option>
                     </Field>
                     {errors.age && touched.age && (
                       <div className="text-red-500 text-sm mt-1">{errors.age}</div>
@@ -205,13 +203,13 @@ export default function LifestyleForm({ onSubmit, validationSchema, initialValue
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Profesión/Ocupación
+                      Profession/Occupation
                     </label>
                     <Field
                       name="profession"
                       type="text"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                      placeholder="Tu profesión actual"
+                      placeholder="Your current profession"
                     />
                     {errors.profession && touched.profession && (
                       <div className="text-red-500 text-sm mt-1">{errors.profession}</div>
@@ -220,18 +218,18 @@ export default function LifestyleForm({ onSubmit, validationSchema, initialValue
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Tiempo Disponible (horas por semana)
+                      Time Available (hours per week)
                     </label>
                     <Field
                       name="timeAvailable"
                       as="select"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 cursor-pointer"
                     >
-                      <option value="">Selecciona tiempo disponible</option>
-                      <option value="1-3 horas">1-3 horas por semana</option>
-                      <option value="4-7 horas">4-7 horas por semana</option>
-                      <option value="8-15 horas">8-15 horas por semana</option>
-                      <option value="15+ horas">15+ horas por semana</option>
+                      <option value="">Select time available</option>
+                      <option value="1-3 hours">1-3 hours per week</option>
+                      <option value="4-7 hours">4-7 hours per week</option>
+                      <option value="8-15 hours">8-15 hours per week</option>
+                      <option value="15+ hours">15+ hours per week</option>
                     </Field>
                     {errors.timeAvailable && touched.timeAvailable && (
                       <div className="text-red-500 text-sm mt-1">{errors.timeAvailable}</div>
@@ -240,17 +238,17 @@ export default function LifestyleForm({ onSubmit, validationSchema, initialValue
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Nivel de Experiencia en Desarrollo Personal
+                      Level of Experience in Personal Development
                     </label>
                     <Field
                       name="experience"
                       as="select"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 cursor-pointer"
                     >
-                      <option value="">Selecciona tu nivel</option>
-                      <option value="principiante">Principiante - Nuevo en esto</option>
-                      <option value="intermedio">Intermedio - Algo de experiencia</option>
-                      <option value="avanzado">Avanzado - Mucha experiencia</option>
+                      <option value="">Select your level</option>
+                      <option value="beginner">Beginner - New to this</option>
+                      <option value="intermediate">Intermediate - Some experience</option>
+                      <option value="advanced">Advanced - Lots of experience</option>
                     </Field>
                     {errors.experience && touched.experience && (
                       <div className="text-red-500 text-sm mt-1">{errors.experience}</div>
@@ -264,12 +262,12 @@ export default function LifestyleForm({ onSubmit, validationSchema, initialValue
                     <div className="bg-blue-100 p-2 rounded-lg">
                       <span className="text-blue-600 text-lg">🎯</span>
                     </div>
-                    Objetivos y Preferencias
+                    Goals and Preferences
                   </h2>
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
-                      Objetivos Principales (selecciona los que apliquen)
+                      Main Goals (select those that apply)
                     </label>
                     <div className="grid md:grid-cols-1 gap-2 max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-3">
                       {goalOptions.map((goal) => (
@@ -293,23 +291,23 @@ export default function LifestyleForm({ onSubmit, validationSchema, initialValue
                     {errors.goals && touched.goals && (
                       <div className="text-red-500 text-sm mt-1">{errors.goals}</div>
                     )}
-                    <p className="text-xs text-gray-500 mt-1">Seleccionados: {values.goals.length}</p>
+                    <p className="text-xs text-gray-500 mt-1">Selected: {values.goals.length}</p>
                   </div>
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Estilo de Trabajo Preferido
+                      Preferred Work Style
                     </label>
                     <Field
                       name="workStyle"
                       as="select"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 cursor-pointer"
                     >
-                      <option value="">Selecciona tu estilo</option>
-                      <option value="remoto">Trabajo remoto</option>
-                      <option value="presencial">Trabajo presencial</option>
-                      <option value="hibrido">Trabajo híbrido</option>
-                      <option value="freelance">Freelance/Independiente</option>
+                      <option value="">Select your style</option>
+                      <option value="remoto">Remote work</option>
+                      <option value="presencial">On-site work</option>
+                      <option value="hibrido">Hybrid work</option>
+                      <option value="freelance">Freelance/Independent</option>
                     </Field>
                     {errors.workStyle && touched.workStyle && (
                       <div className="text-red-500 text-sm mt-1">{errors.workStyle}</div>
@@ -318,20 +316,20 @@ export default function LifestyleForm({ onSubmit, validationSchema, initialValue
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Tipo de Ejercicio Preferido
+                      Preferred Exercise Type
                     </label>
                     <Field
                       name="exerciseType"
                       as="select"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 cursor-pointer"
                     >
-                      <option value="">Selecciona tipo de ejercicio</option>
-                      <option value="cardio">Cardio y resistencia</option>
-                      <option value="fuerza">Entrenamiento de fuerza</option>
-                      <option value="yoga">Yoga y flexibilidad</option>
-                      <option value="deportes">Deportes en equipo</option>
-                      <option value="mixto">Entrenamiento mixto</option>
-                      <option value="caminata">Caminatas y actividades suaves</option>
+                      <option value="">Select exercise type</option>
+                      <option value="cardio">Cardio and resistance</option>
+                      <option value="fuerza">Strength training</option>
+                      <option value="yoga">Yoga and flexibility</option>
+                      <option value="deportes">Team sports</option>
+                      <option value="mixto">Mixed training</option>
+                      <option value="caminata">Easy walks and activities</option>
                     </Field>
                     {errors.exerciseType && touched.exerciseType && (
                       <div className="text-red-500 text-sm mt-1">{errors.exerciseType}</div>
@@ -340,19 +338,19 @@ export default function LifestyleForm({ onSubmit, validationSchema, initialValue
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Tipo de Dieta Preferida
+                      Preferred Diet Type
                     </label>
                     <Field
                       name="dietType"
                       as="select"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 cursor-pointer"
                     >
-                      <option value="">Selecciona tipo de dieta</option>
-                      <option value="balanceada">Dieta balanceada</option>
-                      <option value="vegetariana">Vegetariana</option>
-                      <option value="vegana">Vegana</option>
-                      <option value="keto">Keto/Cetogénica</option>
-                      <option value="mediterranea">Mediterránea</option>
+                      <option value="">Select diet type</option>
+                      <option value="balanceada">Balanced diet</option>
+                      <option value="vegetariana">Vegetarian</option>
+                      <option value="vegana">Vegan</option>
+                      <option value="keto">Keto/Cetogenic</option>
+                      <option value="mediterranea">Mediterranean</option>
                       <option value="paleo">Paleo</option>
                     </Field>
                     {errors.dietType && touched.dietType && (
@@ -369,12 +367,12 @@ export default function LifestyleForm({ onSubmit, validationSchema, initialValue
                     <div className="bg-green-100 p-2 rounded-lg">
                       <span className="text-green-600 text-lg">🎨</span>
                     </div>
-                    Intereses y Habilidades
+                    Interests and Skills
                   </h2>
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
-                      Hobbies e Intereses (selecciona los que te gusten)
+                      Hobbies and Interests (select those you like)
                     </label>
                     <div className="grid md:grid-cols-1 gap-2 max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-3">
                       {hobbyOptions.map((hobby) => (
@@ -398,12 +396,12 @@ export default function LifestyleForm({ onSubmit, validationSchema, initialValue
                     {errors.hobbies && touched.hobbies && (
                       <div className="text-red-500 text-sm mt-1">{errors.hobbies}</div>
                     )}
-                    <p className="text-xs text-gray-500 mt-1">Seleccionados: {values.hobbies.length}</p>
+                    <p className="text-xs text-gray-500 mt-1">Selected: {values.hobbies.length}</p>
                   </div>
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
-                      Habilidades Actuales (selecciona las que ya tienes)
+                      Current Skills (select those you already have)
                     </label>
                     <div className="grid md:grid-cols-1 gap-2 max-h-40 overflow-y-auto border border-gray-200 rounded-lg p-3">
                       {currentSkillsOptions.map((skill) => (
@@ -424,7 +422,7 @@ export default function LifestyleForm({ onSubmit, validationSchema, initialValue
                         </label>
                       ))}
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Seleccionadas: {values.currentSkills.length}</p>
+                    <p className="text-xs text-gray-500 mt-1">Selected: {values.currentSkills.length}</p>
                   </div>
                 </div>
 
@@ -433,24 +431,24 @@ export default function LifestyleForm({ onSubmit, validationSchema, initialValue
                     <div className="bg-orange-100 p-2 rounded-lg">
                       <span className="text-orange-600 text-lg">⚡</span>
                     </div>
-                    Estilo Personal
+                    Personal Style
                   </h2>
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Estilo de Aprendizaje Preferido
+                      Preferred Learning Style
                     </label>
                     <Field
                       name="learningStyle"
                       as="select"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 cursor-pointer"
                     >
-                      <option value="">Selecciona tu estilo</option>
-                      <option value="visual">Visual (videos, diagramas, imágenes)</option>
-                      <option value="auditivo">Auditivo (podcasts, explicaciones)</option>
-                      <option value="kinestesico">Kinestésico (práctica, experimentación)</option>
-                      <option value="lectura">Lectura/Escritura (libros, notas)</option>
-                      <option value="mixto">Mixto (combinación de varios)</option>
+                      <option value="">Select your style</option>
+                      <option value="visual">Visual (videos, diagrams, images)</option>
+                      <option value="auditivo">Auditory (podcasts, explanations)</option>
+                      <option value="kinestesico">Kinesthetic (practice, experimentation)</option>
+                      <option value="lectura">Reading/Writing (books, notes)</option>
+                      <option value="mixto">Mixed (combination of several)</option>
                     </Field>
                     {errors.learningStyle && touched.learningStyle && (
                       <div className="text-red-500 text-sm mt-1">{errors.learningStyle}</div>
@@ -459,7 +457,7 @@ export default function LifestyleForm({ onSubmit, validationSchema, initialValue
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
-                      ¿Qué te motiva más? (selecciona los que apliquen)
+                      What motivates you the most? (select those that apply)
                     </label>
                     <div className="grid md:grid-cols-1 gap-2 max-h-40 overflow-y-auto border border-gray-200 rounded-lg p-3">
                       {motivationFactorsOptions.map((factor) => (
@@ -480,12 +478,12 @@ export default function LifestyleForm({ onSubmit, validationSchema, initialValue
                         </label>
                       ))}
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Seleccionados: {values.motivationFactors.length}</p>
+                    <p className="text-xs text-gray-500 mt-1">Selected: {values.motivationFactors.length}</p>
                   </div>
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
-                      Principales Desafíos Actuales (selecciona los que enfrentas)
+                      Main Current Challenges (select those you face)
                     </label>
                     <div className="grid md:grid-cols-1 gap-2 max-h-40 overflow-y-auto border border-gray-200 rounded-lg p-3">
                       {currentChallengesOptions.map((challenge) => (
@@ -506,24 +504,24 @@ export default function LifestyleForm({ onSubmit, validationSchema, initialValue
                         </label>
                       ))}
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Seleccionados: {values.currentChallenges.length}</p>
+                    <p className="text-xs text-gray-500 mt-1">Selected: {values.currentChallenges.length}</p>
                   </div>
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Horario Preferido para Actividades
+                      Preferred Schedule for Activities
                     </label>
                     <Field
                       name="preferredSchedule"
                       as="select"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 cursor-pointer"
                     >
-                      <option value="">Selecciona tu horario preferido</option>
-                      <option value="mañana">Mañana temprano (6-9 AM)</option>
-                      <option value="media-mañana">Media mañana (9-12 PM)</option>
-                      <option value="tarde">Tarde (12-6 PM)</option>
-                      <option value="noche">Noche (6-10 PM)</option>
-                      <option value="flexible">Flexible - depende del día</option>
+                      <option value="">Select your preferred schedule</option>
+                      <option value="morning">Early morning (6-9 AM)</option>
+                      <option value="mid-morning">Mid-morning (9-12 PM)</option>
+                      <option value="afternoon">Afternoon (12-6 PM)</option>
+                      <option value="evening">Evening (6-10 PM)</option>
+                      <option value="flexible">Flexible - depends on the day</option>
                     </Field>
                     {errors.preferredSchedule && touched.preferredSchedule && (
                       <div className="text-red-500 text-sm mt-1">{errors.preferredSchedule}</div>
@@ -532,14 +530,14 @@ export default function LifestyleForm({ onSubmit, validationSchema, initialValue
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Presupuesto Mensual para Desarrollo Personal
+                      Monthly Budget for Personal Development
                     </label>
                     <Field
                       name="budget"
                       as="select"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 cursor-pointer"
                     >
-                      <option value="">Selecciona tu presupuesto</option>
+                      <option value="">Select your budget</option>
                       <option value="0-50">$0 - $50 USD</option>
                       <option value="50-100">$50 - $100 USD</option>
                       <option value="100-200">$100 - $200 USD</option>
@@ -561,7 +559,7 @@ export default function LifestyleForm({ onSubmit, validationSchema, initialValue
                   className="inline-flex items-center justify-center gap-3 py-4 px-12 border border-transparent rounded-lg shadow-sm text-xl font-bold text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-200 cursor-pointer hover:scale-105 transform disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   <span className="text-2xl">✨</span>
-                  {isSubmitting ? 'Generando tu plan...' : 'Generar Mi Plan Personalizado'}
+                  {isSubmitting ? 'Generating your plan...' : 'Generate My Personalized Plan'}
                   <span className="text-2xl">🚀</span>
                 </button>
               </div>

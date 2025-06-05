@@ -1,33 +1,35 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import LifestyleForm from '@/components/LifestyleForm';
 import LifestylePlan from '@/components/LifestylePlan';
 import PlansManager from '@/components/PlansManager';
 import { generatePersonalizedPlan } from '@/utils/planGenerator';
 import type { LifestylePlan as LifestylePlanType } from '@/types/lifestyle';
 import { useAppSelector } from '@/store/hooks';
-import { selectIsHydrated } from '@/store/selectors';
+import { selectIsHydrated, selectPlans } from '@/store/selectors';
+import { useKeyboardShortcuts, useFocusManagement } from '@/hooks/useKeyboardShortcuts';
 import * as Yup from 'yup';
 
 // Form validation schema
 const validationSchema = Yup.object({
-  name: Yup.string().required('El nombre es requerido'),
-  age: Yup.string().required('La edad es requerida'),
-  profession: Yup.string().required('La profesión es requerida'),
-  goals: Yup.array().min(1, 'Selecciona al menos un objetivo').required('Al menos un objetivo es requerido'),
-  timeAvailable: Yup.string().required('El tiempo disponible es requerido'),
-  workStyle: Yup.string().required('El estilo de trabajo es requerido'),
-  exerciseType: Yup.string().required('El tipo de ejercicio es requerido'),
-  hobbies: Yup.array().min(1, 'Selecciona al menos un hobby').required('Al menos un hobby es requerido'),
-  dietType: Yup.string().required('El tipo de dieta es requerido'),
+  name: Yup.string().required('Name is required'),
+  age: Yup.string().required('Age is required'),
+  profession: Yup.string().required('Profession is required'),
+  goals: Yup.array().min(1, 'Select at least one goal'),
+  timeAvailable: Yup.string().required('Available time is required'),
+  workStyle: Yup.string().required('Work style is required'),
+  exerciseType: Yup.string().required('Exercise type is required'),
+  hobbies: Yup.array().min(1, 'Select at least one hobby'),
+  dietType: Yup.string().required('Diet type is required'),
   currentSkills: Yup.array(),
-  learningStyle: Yup.string().required('El estilo de aprendizaje es requerido'),
-  motivationFactors: Yup.array().min(1, 'Selecciona al menos un factor de motivación'),
+  learningStyle: Yup.string().required('Learning style is required'),
+  motivationFactors: Yup.array(),
   currentChallenges: Yup.array(),
-  preferredSchedule: Yup.string().required('El horario preferido es requerido'),
-  budget: Yup.string().required('El presupuesto es requerido'),
-  experience: Yup.string().required('El nivel de experiencia es requerido')
+  preferredSchedule: Yup.string().required('Preferred schedule is required'),
+  budget: Yup.string().required('Budget is required'),
+  experience: Yup.string().required('Experience level is required')
 });
 
 interface FormValues {
@@ -52,9 +54,30 @@ interface FormValues {
 type ViewMode = 'manage' | 'create' | 'view' | 'edit';
 
 export default function Home() {
+  const router = useRouter();
   const isHydrated = useAppSelector(selectIsHydrated);
+  const plans = useAppSelector(selectPlans);
   const [currentPlan, setCurrentPlan] = useState<LifestylePlanType | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('manage');
+
+  // Setup keyboard shortcuts
+  useKeyboardShortcuts({
+    onNavigateHome: () => setViewMode('manage'),
+    onNavigateDashboard: () => {
+      if (plans.length > 0) {
+        router.push('/dashboard');
+      }
+    },
+    onNavigateSettings: () => router.push('/settings'),
+    onQuickEdit: () => {
+      if (currentPlan && viewMode === 'view') {
+        setViewMode('edit');
+      }
+    }
+  });
+
+  // Setup focus management
+  useFocusManagement();
 
   const handleFormSubmit = (values: FormValues) => {
     const userProfile = {
@@ -115,7 +138,7 @@ export default function Home() {
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Cargando aplicación...</p>
+          <p className="text-gray-600">Loading application...</p>
         </div>
       </div>
     );
@@ -136,13 +159,23 @@ export default function Home() {
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100">
         <div className="container mx-auto px-4 py-8">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Crear Nuevo Plan</h1>
-            <button
-              onClick={handleBackToManage}
-              className="bg-gray-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-600 transition-colors"
-            >
-              ← Volver a Mis Planes
-            </button>
+            <h1 className="text-3xl font-bold text-gray-900">Create New Plan</h1>
+            <div className="flex gap-3">
+              {plans.length > 0 && (
+                <button
+                  onClick={() => router.push('/dashboard')}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
+                >
+                  📊 Dashboard
+                </button>
+              )}
+              <button
+                onClick={handleBackToManage}
+                className="bg-gray-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-600 transition-colors"
+              >
+                ← Back to My Plans
+              </button>
+            </div>
           </div>
           <LifestyleForm
             onSubmit={handleFormSubmit}
@@ -160,14 +193,24 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex justify-between items-center">
               <h1 className="text-2xl font-bold text-gray-900">
-                {viewMode === 'edit' ? 'Editar Plan' : 'Ver Plan'}
+                {viewMode === 'edit' ? 'Edit Plan' : 'View Plan'}
               </h1>
-              <button
-                onClick={handleBackToManage}
-                className="bg-gray-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-600 transition-colors"
-              >
-                ← Volver a Mis Planes
-              </button>
+              <div className="flex gap-3">
+                {plans.length > 0 && (
+                  <button
+                    onClick={() => router.push('/dashboard')}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
+                  >
+                    📊 Dashboard
+                  </button>
+                )}
+                <button
+                  onClick={handleBackToManage}
+                  className="bg-gray-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-600 transition-colors"
+                >
+                  ← Back to My Plans
+                </button>
+              </div>
             </div>
           </div>
         </div>

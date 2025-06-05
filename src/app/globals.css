@@ -95,3 +95,193 @@ body {
     @apply border-gray-300 hover:border-purple-300;
   }
 }
+
+/* Print-specific styles for lifestyle plans */
+@media print {
+  /* Hide non-essential elements when printing */
+  .printing-plan header,
+  .printing-plan nav,
+  .printing-plan .progress-timeline,
+  .printing-plan .tab-navigation,
+  .printing-plan button,
+  .printing-plan .bg-gradient-to-r.from-purple-50.to-blue-50,
+  .printing-plan .navigation-buttons {
+    display: none !important;
+  }
+
+  /* Reset page layout for printing */
+  .printing-plan {
+    background: white !important;
+    color: black !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Plan header styling for print */
+  .printing-plan .plan-header {
+    background: #f8f9fa !important;
+    color: #333 !important;
+    padding: 20px !important;
+    margin-bottom: 20px !important;
+    border: 2px solid #333 !important;
+    page-break-inside: avoid;
+  }
+
+  /* Section headers */
+  .printing-plan h1,
+  .printing-plan h2,
+  .printing-plan h3,
+  .printing-plan h4 {
+    color: #333 !important;
+    page-break-after: avoid;
+    margin-top: 15px;
+    margin-bottom: 10px;
+  }
+
+  .printing-plan h1 {
+    font-size: 24px !important;
+    font-weight: bold;
+  }
+
+  .printing-plan h2 {
+    font-size: 20px !important;
+    font-weight: bold;
+  }
+
+  .printing-plan h3 {
+    font-size: 18px !important;
+    font-weight: bold;
+  }
+
+  .printing-plan h4 {
+    font-size: 16px !important;
+    font-weight: bold;
+  }
+
+  /* Content sections */
+  .printing-plan .space-y-8 > div,
+  .printing-plan .space-y-6 > div {
+    page-break-inside: avoid;
+    margin-bottom: 20px !important;
+    border: 1px solid #ddd !important;
+    padding: 15px !important;
+    background: white !important;
+  }
+
+  /* Grid layouts */
+  .printing-plan .grid {
+    display: block !important;
+  }
+
+  .printing-plan .grid > div {
+    margin-bottom: 15px !important;
+    width: 100% !important;
+  }
+
+  /* Lists and content */
+  .printing-plan ul,
+  .printing-plan ol {
+    margin: 10px 0 10px 20px !important;
+  }
+
+  .printing-plan li {
+    margin-bottom: 5px !important;
+  }
+
+  /* Tables and structured content */
+  .printing-plan .border,
+  .printing-plan .rounded-lg,
+  .printing-plan .shadow-lg {
+    border: 1px solid #ddd !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Progress bars and visual elements */
+  .printing-plan .bg-blue-600,
+  .printing-plan .bg-green-600,
+  .printing-plan .bg-purple-600 {
+    background: #333 !important;
+  }
+
+  .printing-plan .bg-blue-200,
+  .printing-plan .bg-green-200,
+  .printing-plan .bg-purple-200 {
+    background: #f0f0f0 !important;
+  }
+
+  /* Icons and decorative elements */
+  .printing-plan svg {
+    display: none !important;
+  }
+
+  /* Badges and tags */
+  .printing-plan .text-xs {
+    font-size: 10px !important;
+  }
+
+  .printing-plan .px-2 {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+  }
+
+  .printing-plan .py-1 {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+  }
+
+  /* Ensure good page breaks */
+  .printing-plan .achievements,
+  .printing-plan .professional-plan,
+  .printing-plan .fitness-plan,
+  .printing-plan .hobbies-plan,
+  .printing-plan .nutrition-plan {
+    page-break-before: auto;
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  /* Print-specific content adjustments */
+  .printing-plan .text-center {
+    text-align: left !important;
+  }
+
+  .printing-plan .flex {
+    display: block !important;
+  }
+
+  .printing-plan .flex > div {
+    margin-bottom: 5px !important;
+  }
+
+  /* Hide interactive elements */
+  .printing-plan input[type="checkbox"],
+  .printing-plan .hover\:bg-gray-50,
+  .printing-plan .hover\:bg-gray-200,
+  .printing-plan .cursor-pointer {
+    pointer-events: none !important;
+  }
+
+  .printing-plan input[type="checkbox"]:checked::before {
+    content: "✓";
+    font-weight: bold;
+  }
+
+  /* Page setup */
+  @page {
+    margin: 1in;
+    size: A4;
+  }
+
+  /* Print header with plan info */
+  .printing-plan::before {
+    content: "Plan de Estilo de Vida Personalizado";
+    display: block;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+}
